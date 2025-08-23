@@ -1,104 +1,263 @@
-<script src="form-validation.js"></script>
-<script src="smooth-scrolling.js"></script>
-<script src="image-carousel.js"></script>
-<script src="api-calls.js"></script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog Profissional - Conteúdo de Qualidade</title>
-    <meta name="description" content="Blog profissional com conteúdo de qualidade e design moderno">
+    <title>MaranhãoNews - Notícias do Estado do Maranhão</title>
+    <meta name="description" content="Portal de notícias sobre política, economia e desenvolvimento do estado do Maranhão. Fique por dentro das principais notícias do MA">
+    <meta name="keywords" content="maranhão, notícias, política, economia, são luís, desenvolvimento, brasil, nordeste">
+    <meta name="author" content="MaranhãoNews">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog Profissional - Conteúdo de Qualidade">
+    <meta property="og:description" content="Conteúdo de qualidade, insights valiosos e conhecimento compartilhado">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog Profissional - Conteúdo de Qualidade">
+    <meta name="twitter:description" content="Conteúdo de qualidade, insights valiosos e conhecimento compartilhado">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop" as="image">
+    <link rel="preload" href="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" as="image">
+    
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://images.unsplash.com">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "BlogPro",
+        "description": "Blog profissional com conteúdo de qualidade e design moderno",
+        "url": "https://exemplo.com",
+        "publisher": {
+            "@type": "Organization",
+            "name": "BlogPro",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://exemplo.com/logo.png"
+            }
+        },
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https://exemplo.com"
+        }
+    }
+    </script>
 
 </head>
 <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
     <!-- Header -->
-    <header class="header">
-        <nav class="nav">
+    <header class="header" role="banner">
+        <nav class="nav" aria-label="Navegação principal">
             <div class="nav-container">
-                <a href="#" class="nav-logo">BlogPro</a>
-                <ul class="nav-menu">
-                    <li><a href="#home" class="nav-link">Home</a></li>
-                    <li><a href="#about" class="nav-link">Sobre</a></li>
-                    <li><a href="#posts" class="nav-link">Posts</a></li>
-                    <li><a href="#contact" class="nav-link">Contato</a></li>
+    <div class="nav-logo-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="bandeira">
+        <span aria-hidden="true">📰</span> MaranhãoNews
+    </a>
+                
+                <!-- Mobile menu button -->
+                <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <ul class="nav-menu" role="menubar">
+                    <li role="none">
+                        <a href="#home" class="nav-link" role="menuitem" aria-current="page">Início</a>
+                    </li>
+                    <li role="none">
+                        <a href="#politica" class="nav-link" role="menuitem">Política</a>
+                    </li>
+                    <li role="none">
+                        <a href="#economia" class="nav-link" role="menuitem">Economia</a>
+                    </li>
+                    <li role="none">
+                        <a href="#cultura" class="nav-link" role="menuitem">Cultura</a>
+                    </li>
+                    <li role="none">
+                        <a href="#contato" class="nav-link" role="menuitem">Contato</a>
+                    </li>
                 </ul>
             </div>
         </nav>
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="home">
+    <section class="hero" id="home" aria-labelledby="hero-title">
         <div class="hero-content">
-            <h1 class="hero-title">Bem-vindo ao Meu Blog Profissional</h1>
-            <p class="hero-subtitle">Conteúdo de qualidade, insights valiosos e conhecimento compartilhado</p>
-            <a href="#posts" class="hero-btn">Explorar Posts</a>
+            <h1 id="hero-title" class="hero-title">Maranhão em Foco</h1>
+            <p class="hero-subtitle">As principais notícias sobre política, economia e desenvolvimento do estado do Maranhão</p>
+            <a href="#posts" class="hero-btn" aria-label="Ver notícias do Maranhão">Ver Notícias</a>
         </div>
     </section>
 
     <!-- Main Content -->
-    <main class="main-container">
+    <main id="main-content" class="main-container">
         <!-- Posts Section -->
-        <section class="posts" id="posts">
-            <h2 class="section-title">Posts Recentes</h2>
+        <section class="posts" id="posts" aria-labelledby="posts-title">
+            <h2 id="posts-title" class="section-title">Notícias Recentes</h2>
             
-            <article class="post-card">
+            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                 <div class="post-image">
-                    <div class="post-placeholder">📝</div>
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop" 
+                         alt="Workspace moderno com computador e caderno" 
+                         loading="lazy"
+                         width="400"
+                         height="300">
                 </div>
                 <div class="post-content">
-                    <h3 class="post-title">Como criar um blog profissional</h3>
-                    <p class="post-excerpt">Aprenda os passos essenciais para criar um blog com design moderno e funcionalidades profissionais...</p>
+                    <h3 class="post-title" itemprop="headline">Como criar um blog profissional</h3>
+                    <p class="post-excerpt" itemprop="description">
+                        Aprenda os passos essenciais para criar um blog com design moderno e funcionalidades profissionais...
+                    </p>
                     <div class="post-meta">
-                        <span class="post-date">23 Ago 2025</span>
-                        <a href="#" class="read-more">Ler mais</a>
+                        <time class="post-date" datetime="2025-08-23" itemprop="datePublished">23 Ago 2025</time>
+                        <a href="#" class="read-more" aria-label="Ler mais sobre Como criar um blog profissional">Ler mais</a>
                     </div>
                 </div>
             </article>
 
-            <article class="post-card">
+            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                 <div class="post-image">
-                    <div class="post-placeholder">💡</div>
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" 
+                         alt="Design de interface moderna em tela de computador" 
+                         loading="lazy"
+                         width="400"
+                         height="300">
                 </div>
                 <div class="post-content">
-                    <h3 class="post-title">Dicas de design para web</h3>
-                    <p class="post-excerpt">Descubra as melhores práticas de design web para criar interfaces atraentes e funcionais...</p>
+                    <h3 class="post-title" itemprop="headline">Dicas de design para web</h3>
+                    <p class="post-excerpt" itemprop="description">
+                        Descubra as melhores práticas de design web para criar interfaces atraentes e funcionais...
+                    </p>
                     <div class="post-meta">
-                        <span class="post-date">22 Ago 2025</span>
-                        <a href="#" class="read-more">Ler mais</a>
+                        <time class="post-date" datetime="2025-08-22" itemprop="datePublished">22 Ago 2025</time>
+                        <a href="#" class="read-more" aria-label="Ler mais sobre Dicas de design para web">Ler mais</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=400&h=300&fit=crop" 
+                         alt="Caderno com anotações de desenvolvimento web" 
+                         loading="lazy"
+                         width="400"
+                         height="300">
+                </div>
+                <div class="post-content">
+                    <h3 class="post-title" itemprop="headline">Otimização de performance web</h3>
+                    <p class="post-excerpt" itemprop="description">
+                        Técnicas avançadas para melhorar a performance do seu website e proporcionar melhor experiência...
+                    </p>
+                    <div class="post-meta">
+                        <time class="post-date" datetime="2025-08-21" itemprop="datePublished">21 Ago 2025</time>
+                        <a href="#" class="read-more" aria-label="Ler mais sobre Otimização de performance web">Ler mais</a>
                     </div>
                 </div>
             </article>
         </section>
 
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" aria-labelledby="sidebar-title">
             <div class="widget">
-                <h3 class="widget-title">Sobre</h3>
-                <p class="widget-content">Sou apaixonado por compartilhar conhecimento e experiências através deste blog profissional.</p>
+                <h3 id="sidebar-title" class="widget-title">Sobre</h3>
+                <p class="widget-content">
+                    Portal de notícias dedicado a cobrir os principais acontecimentos do estado do Maranhão. 
+                    Trazemos informações sobre política, economia, cultura e desenvolvimento regional.
+                </p>
             </div>
 
             <div class="widget">
                 <h3 class="widget-title">Newsletter</h3>
                 <p class="widget-content">Receba os melhores posts diretamente no seu email.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Seu email" class="newsletter-input">
+                <form class="newsletter-form" aria-labelledby="newsletter-title" data-netlify="true" netlify-honeypot="bot-field">
+                    <input type="hidden" name="form-name" value="newsletter">
+                    <div style="display: none;">
+                        <label>Não preencha este campo: <input name="bot-field"></label>
+                    </div>
+                    <label for="newsletter-email" class="visually-hidden">Seu email</label>
+                    <input 
+                        type="email" 
+                        id="newsletter-email" 
+                        name="email"
+                        placeholder="Seu email" 
+                        class="newsletter-input"
+                        required
+                        aria-required="true">
                     <button type="submit" class="newsletter-btn">Assinar</button>
                 </form>
+            </div>
+
+            <div class="widget">
+                <h3 class="widget-title">Categorias</h3>
+                <ul class="categories-list" role="list">
+                    <li><a href="#" class="category-link">Desenvolvimento Web</a></li>
+                    <li><a href="#" class="category-link">Design UX/UI</a></li>
+                    <li><a href="#" class="category-link">Performance</a></li>
+                    <li><a href="#" class="category-link">Ferramentas</a></li>
+                </ul>
             </div>
         </aside>
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="footer-content">
             <p>&copy; 2025 BlogPro. Todos os direitos reservados.</p>
             <div class="social-links">
-                <a href="#" class="social-link">Twitter</a>
-                <a href="#" class="social-link">LinkedIn</a>
-                <a href="#" class="social-link">GitHub</a>
+                <a href="#" class="social-link" aria-label="Twitter">
+                    <span aria-hidden="true">🐦</span> Twitter
+                </a>
+                <a href="#" class="social-link" aria-label="LinkedIn">
+                    <span aria-hidden="true">💼</span> LinkedIn
+                </a>
+                <a href="#" class="social-link" aria-label="GitHub">
+                    <span aria-hidden="true">🐙</span> GitHub
+                </a>
             </div>
         </div>
     </footer>
+
+    <!-- JavaScript -->
+    <script src="form-validation.js" defer></script>
+    <script src="smooth-scrolling.js" defer></script>
+    <script src="api-calls.js" defer></script>
+    
+    <!-- Google Analytics Simulation -->
+    <script>
+    // Simulação do Google Analytics
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Performance monitoring -->
+    <script>
+    // Monitoramento de performance básico
+    window.addEventListener('load', function() {
+        const loadTime = performance.now();
+        console.log('Página carregada em:', loadTime.toFixed(2), 'ms');
+    });
+    </script>
 </body>
 </html>
