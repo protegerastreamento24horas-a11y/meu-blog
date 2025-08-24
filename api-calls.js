@@ -304,6 +304,8 @@ class BlogStateManager {
             this.showLoading();
             this.currentPosts = await this.api.getNewsFromMaranhao(6, this.currentQuery);
             this.renderPosts();
+            this.renderFeatured();
+            this.renderMostRead();
         } catch (error) {
             console.error('Error loading posts:', error);
             this.showError('Erro ao carregar posts');
@@ -348,6 +350,51 @@ class BlogStateManager {
             </div>
         `;
         return article;
+    }
+
+    renderFeatured() {
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const featured = this.currentPosts.slice(0, 3);
+        featured.forEach(item => {
+            const card = document.createElement('article');
+            card.className = 'featured-card';
+            card.innerHTML = `
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="featured-link" aria-label="Abrir notícia destaque: ${item.title}">
+                    <div class="featured-media">
+                        <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" width="640" height="360" />
+                        <span class="featured-badge">Destaque</span>
+                    </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">${item.title}</h3>
+                        <p class="featured-excerpt">${item.excerpt || ''}</p>
+                        <div class="featured-meta">
+                            <span>${item.source || ''}</span>
+                            <span>${item.date || ''}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    renderMostRead() {
+        const list = document.querySelector('#most-read-widget .most-read-list');
+        if (!list) return;
+        list.innerHTML = '';
+        const items = this.currentPosts.slice(0, 5);
+        items.forEach((item, idx) => {
+            const li = document.createElement('li');
+            li.className = 'most-read-item';
+            li.innerHTML = `
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="most-read-link">
+                    <span class="most-read-rank">${idx + 1}</span>
+                    <span class="most-read-title">${item.title}</span>
+                </a>`;
+            list.appendChild(li);
+        });
     }
 
     setupUI() {

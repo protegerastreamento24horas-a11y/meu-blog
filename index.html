@@ -98,7 +98,10 @@
                         <a href="#cultura" class="nav-link" role="menuitem">Cultura</a>
                     </li>
                     <li role="none">
-                        <a href="#contato" class="nav-link" role="menuitem">Contato</a>
+                        <a href="sobre.html" class="nav-link" role="menuitem">Sobre</a>
+                    </li>
+                    <li role="none">
+                        <a href="contato.html" class="nav-link" role="menuitem">Contato</a>
                     </li>
                 </ul>
             </div>
@@ -116,6 +119,12 @@
 
     <!-- Main Content -->
     <main id="main-content" class="main-container">
+        <!-- Featured Section -->
+        <section class="featured" id="destaques" aria-labelledby="featured-title">
+            <h2 id="featured-title" class="section-title">Destaques</h2>
+            <div class="featured-grid" aria-live="polite"></div>
+        </section>
+
         <!-- Posts Section -->
         <section class="posts" id="posts" aria-labelledby="posts-title" aria-live="polite">
             <h2 id="posts-title" class="section-title">Notícias Recentes</h2>
@@ -210,6 +219,11 @@
                         aria-required="true">
                     <button type="submit" class="newsletter-btn">Assinar</button>
                 </form>
+            </div>
+
+            <div class="widget" id="most-read-widget">
+                <h3 class="widget-title">Mais Lidas</h3>
+                <ol class="most-read-list" role="list"></ol>
             </div>
 
             <div class="widget">
