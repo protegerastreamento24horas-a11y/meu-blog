@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - MaranhãoNews</title>
+    <meta name="description" content="Entre em contato com o MaranhãoNews para sugestões, parcerias ou dúvidas.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://www.maranhaonews.example/contato.html">
+</head>
+<body>
+    <!-- Header (reutilizado do index.html) -->
+    <header class="header" role="banner">
+        <nav class="nav" aria-label="Navegação principal">
+            <div class="nav-container">
+                <a class="nav-logo" href="/" aria-label="Ir para o início">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="bandeira">
+                    <span aria-hidden="true">📰</span> MaranhãoNews
+                </a>
+                
+                <!-- Mobile menu button -->
+                <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                
+                <ul class="nav-menu" id="primary-menu" role="menubar">
+                    <li role="none">
+                        <a href="/" class="nav-link" role="menuitem">Início</a>
+                    </li>
+                    <li role="none">
+                        <a href="/#politica" class="nav-link" role="menuitem">Política</a>
+                    </li>
+                    <li role="none">
+                        <a href="/#economia" class="nav-link" role="menuitem">Economia</a>
+                    </li>
+                    <li role="none">
+                        <a href="/#cultura" class="nav-link" role="menuitem">Cultura</a>
+                    </li>
+                    <li role="none">
+                        <a href="/sobre.html" class="nav-link" role="menuitem">Sobre</a>
+                    </li>
+                    <li role="none">
+                        <a href="/contato.html" class="nav-link active" role="menuitem" aria-current="page">Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container">
+        <section class="contact-section">
+            <h1 class="section-title">Entre em Contato</h1>
+            <p class="contact-paragraph">Estamos abertos a sugestões, parcerias e feedback. Preencha o formulário abaixo ou envie um email para contato@maranhaonews.example.</p>
+            <form name="contact" method="POST" class="contact-form" data-netlify="true" netlify-honeypot="bot-field">
+                <input type="hidden" name="form-name" value="contact">
+                <div style="display: none;">
+                    <label>Não preencha: <input name="bot-field"></label>
+                </div>
+                <label for="contact-name">Nome</label>
+                <input id="contact-name" name="name" placeholder="Seu nome" required>
+                <label for="contact-email">Email</label>
+                <input id="contact-email" name="email" type="email" placeholder="Seu email" required>
+                <label for="contact-subject">Assunto</label>
+                <input id="contact-subject" name="subject" placeholder="Assunto" required>
+                <label for="contact-message">Mensagem</label>
+                <textarea id="contact-message" name="message" placeholder="Sua mensagem" required></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer (reutilizado do index.html) -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <p>&copy; 2025 MaranhãoNews. Todos os direitos reservados.</p>
+            <div class="social-links">
+                <a href="#" class="social-link" aria-label="Twitter">
+                    <span aria-hidden="true">🐦</span> Twitter
+                </a>
+                <a href="#" class="social-link" aria-label="LinkedIn">
+                    <span aria-hidden="true">💼</span> LinkedIn
+                </a>
+                <a href="#" class="social-link" aria-label="GitHub">
+                    <span aria-hidden="true">🐙</span> GitHub
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="smooth-scrolling.js" defer></script>
+</body>
+</html>

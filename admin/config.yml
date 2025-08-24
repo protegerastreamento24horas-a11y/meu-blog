@@ -1,0 +1,21 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads" # Pasta para uploads de imagens
+
+collections:
+  - name: "posts"
+    label: "Posts"
+    folder: "posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Título", name: "title", widget: "string"}
+      - {label: "Lead Autoral", name: "lead", widget: "text"}
+      - {label: "Excerpt", name: "excerpt", widget: "text"}
+      - {label: "Data", name: "date", widget: "datetime"}
+      - {label: "Imagem", name: "image", widget: "image"}
+      - {label: "URL Original", name: "url", widget: "string"}
+      - {label: "Fonte", name: "source", widget: "string"}
+      - {label: "Categoria", name: "category", widget: "select", options: ["Política", "Economia", "Cultura"]}

@@ -1,0 +1,10 @@
+{
+  "name": "maranhaonews",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "esbuild style.css --bundle --minify --outfile=dist/style.min.css && esbuild api-calls.js form-validation.js smooth-scrolling.js image-carousel.js --bundle --minify --outfile=dist/scripts.min.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.0"
+  }
+}

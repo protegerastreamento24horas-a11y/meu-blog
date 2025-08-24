@@ -497,18 +497,41 @@ class BlogStateManager {
             <div>
                 <h2>${post.title}</h2>
                 <img src="${post.image}" alt="${post.title}">
+                <p class="post-lead">${this.generateLead(post.title, post.excerpt)}</p>
                 <p>${post.excerpt}</p>
                 <div class="news-modal__footer">
                     <span>Fonte: ${post.source}</span>
                     <span>Data: ${post.date}</span>
                 </div>
+                <section class="related-posts" aria-labelledby="related-title">
+                    <h3 id="related-title">Leia também</h3>
+                    <div class="related-grid"></div>
+                </section>
+                <section class="comments" aria-labelledby="comments-title">
+                    <h3 id="comments-title">Comentários</h3>
+                    <form name="comments" method="POST" class="comments-form" data-netlify="true" netlify-honeypot="bot-field">
+                        <input type="hidden" name="form-name" value="comments">
+                        <input type="hidden" name="postId" value="${post.id}">
+                        <div style="display: none;">
+                            <label>Não preencha: <input name="bot-field"></label>
+                        </div>
+                        <label for="comment-name" class="visually-hidden">Nome</label>
+                        <input id="comment-name" name="name" placeholder="Seu nome" required>
+                        <label for="comment-email" class="visually-hidden">Email</label>
+                        <input id="comment-email" name="email" type="email" placeholder="Seu email" required>
+                        <label for="comment-text" class="visually-hidden">Comentário</label>
+                        <textarea id="comment-text" name="comment" placeholder="Seu comentário" required></textarea>
+                        <button type="submit">Enviar</button>
+                    </form>
+                    <ul class="comments-list"></ul>
+                </section>
                 <button class="news-modal__close">
                     Fechar
                 </button>
             </div>
         `;
 
-        const closeButton = modal.querySelector('button');
+        const closeButton = modal.querySelector('.news-modal__close');
         const onClose = () => {
             document.body.removeChild(modal);
             document.removeEventListener('keydown', onEsc);
@@ -519,6 +542,12 @@ class BlogStateManager {
         closeButton.addEventListener('click', onClose);
         document.addEventListener('keydown', onEsc);
         closeButton.focus();
+
+        // Render related posts
+        this.renderRelatedPosts(modal.querySelector('.related-grid'), post);
+
+        // Render comments (simulated)
+        this.renderComments(modal.querySelector('.comments-list'), post.id);
 
         document.body.appendChild(modal);
     }
@@ -554,6 +583,41 @@ class BlogStateManager {
             style.textContent = `@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`;
             document.head.appendChild(style);
         }
+    }
+
+    generateLead(title, excerpt) {
+        // Simulação simples de lead autoral; substitua por conteúdo real ou IA
+        return `Análise: ${title.split(' ').slice(0, 3).join(' ')} representa um avanço significativo para o Maranhão, impactando diretamente a economia local. ${excerpt.substring(0, 50)}...`;
+    }
+
+    renderRelatedPosts(container, currentPost) {
+        if (!container) return;
+        container.innerHTML = '';
+        const related = this.currentPosts.filter(p => p.id !== currentPost.id).slice(0, 3);
+        related.forEach(item => {
+            const card = document.createElement('article');
+            card.className = 'related-card';
+            card.innerHTML = `
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="related-link">
+                    <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" width="120" height="80">
+                    <span class="related-title">${item.title}</span>
+                </a>`;
+            container.appendChild(card);
+        });
+    }
+
+    renderComments(container, postId) {
+        if (!container) return;
+        container.innerHTML = '';
+        const comments = this.getFallbackComments(); // Simulado; integre com API real
+        comments.forEach(c => {
+            const li = document.createElement('li');
+            li.className = 'comment-item';
+            li.innerHTML = `
+                <strong>${c.name}</strong>: ${c.body}
+            `;
+            container.appendChild(li);
+        });
     }
 
     hideLoading() {
