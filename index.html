@@ -11,14 +11,18 @@
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Blog Profissional - Conteúdo de Qualidade">
-    <meta property="og:description" content="Conteúdo de qualidade, insights valiosos e conhecimento compartilhado">
+    <meta property="og:title" content="MaranhãoNews - Notícias do Maranhão">
+    <meta property="og:description" content="As principais notícias sobre política, economia e desenvolvimento do Maranhão">
     <meta property="og:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
+    <meta property="og:url" content="https://www.maranhaonews.example/">
+    <meta property="og:site_name" content="MaranhãoNews">
+    <meta property="og:locale" content="pt_BR">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Blog Profissional - Conteúdo de Qualidade">
-    <meta name="twitter:description" content="Conteúdo de qualidade, insights valiosos e conhecimento compartilhado">
+    <meta name="twitter:title" content="MaranhãoNews - Notícias do Maranhão">
+    <meta name="twitter:description" content="As principais notícias sobre política, economia e desenvolvimento do Maranhão">
+    <meta name="twitter:site" content="@MaranhaoNews">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
     
     <!-- Favicon -->
@@ -26,11 +30,12 @@
     
     <!-- Preload critical resources -->
     <link rel="preload" href="style.css" as="style">
-    <link rel="preload" href="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop" as="image">
-    <link rel="preload" href="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" as="image">
-    
+            
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.maranhaonews.example/">
     
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://images.unsplash.com">
@@ -40,20 +45,20 @@
     {
         "@context": "https://schema.org",
         "@type": "Blog",
-        "name": "BlogPro",
-        "description": "Blog profissional com conteúdo de qualidade e design moderno",
-        "url": "https://exemplo.com",
+        "name": "MaranhãoNews",
+        "description": "Portal de notícias sobre política, economia, cultura e desenvolvimento do Maranhão",
+        "url": "https://www.maranhaonews.example/",
         "publisher": {
             "@type": "Organization",
-            "name": "BlogPro",
+            "name": "MaranhãoNews",
             "logo": {
                 "@type": "ImageObject",
-                "url": "https://exemplo.com/logo.png"
+                "url": "https://www.maranhaonews.example/logo.png"
             }
         },
         "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": "https://exemplo.com"
+            "@id": "https://www.maranhaonews.example/"
         }
     }
     </script>
@@ -67,19 +72,19 @@
     <header class="header" role="banner">
         <nav class="nav" aria-label="Navegação principal">
             <div class="nav-container">
-    <div class="nav-logo-container">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="bandeira">
-        <span aria-hidden="true">📰</span> MaranhãoNews
-    </a>
+                <a class="nav-logo" href="#home" aria-label="Ir para o início">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="bandeira">
+                    <span aria-hidden="true">📰</span> MaranhãoNews
+                </a>
                 
                 <!-- Mobile menu button -->
-                <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false">
+                <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-menu">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
                 
-                <ul class="nav-menu" role="menubar">
+                <ul class="nav-menu" id="primary-menu" role="menubar">
                     <li role="none">
                         <a href="#home" class="nav-link" role="menuitem" aria-current="page">Início</a>
                     </li>
@@ -112,14 +117,14 @@
     <!-- Main Content -->
     <main id="main-content" class="main-container">
         <!-- Posts Section -->
-        <section class="posts" id="posts" aria-labelledby="posts-title">
+        <section class="posts" id="posts" aria-labelledby="posts-title" aria-live="polite">
             <h2 id="posts-title" class="section-title">Notícias Recentes</h2>
             
             <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
                 <div class="post-image">
                     <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop" 
                          alt="Workspace moderno com computador e caderno" 
-                         loading="lazy"
+                         loading="lazy" decoding="async"
                          width="400"
                          height="300">
                 </div>
@@ -139,7 +144,7 @@
                 <div class="post-image">
                     <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" 
                          alt="Design de interface moderna em tela de computador" 
-                         loading="lazy"
+                         loading="lazy" decoding="async"
                          width="400"
                          height="300">
                 </div>
@@ -159,7 +164,7 @@
                 <div class="post-image">
                     <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=400&h=300&fit=crop" 
                          alt="Caderno com anotações de desenvolvimento web" 
-                         loading="lazy"
+                         loading="lazy" decoding="async"
                          width="400"
                          height="300">
                 </div>
@@ -187,9 +192,9 @@
             </div>
 
             <div class="widget">
-                <h3 class="widget-title">Newsletter</h3>
+                <h3 id="newsletter-title" class="widget-title">Newsletter</h3>
                 <p class="widget-content">Receba os melhores posts diretamente no seu email.</p>
-                <form class="newsletter-form" aria-labelledby="newsletter-title" data-netlify="true" netlify-honeypot="bot-field">
+                <form name="newsletter" method="POST" class="newsletter-form" aria-labelledby="newsletter-title" data-netlify="true" netlify-honeypot="bot-field">
                     <input type="hidden" name="form-name" value="newsletter">
                     <div style="display: none;">
                         <label>Não preencha este campo: <input name="bot-field"></label>
@@ -219,10 +224,31 @@
         </aside>
     </main>
 
+    <!-- Additional Sections for Navigation Anchors -->
+    <section id="politica" class="section-block" aria-labelledby="politica-title">
+        <h2 id="politica-title" class="section-title">Política</h2>
+        <p class="section-paragraph">Em breve: cobertura de política do Maranhão.</p>
+    </section>
+
+    <section id="economia" class="section-block" aria-labelledby="economia-title">
+        <h2 id="economia-title" class="section-title">Economia</h2>
+        <p class="section-paragraph">Em breve: notícias e análises sobre a economia do estado.</p>
+    </section>
+
+    <section id="cultura" class="section-block" aria-labelledby="cultura-title">
+        <h2 id="cultura-title" class="section-title">Cultura</h2>
+        <p class="section-paragraph">Em breve: eventos e destaques culturais no Maranhão.</p>
+    </section>
+
+    <section id="contato" class="section-block" aria-labelledby="contato-title">
+        <h2 id="contato-title" class="section-title">Contato</h2>
+        <p class="section-paragraph">Para parcerias e sugestões, entre em contato pelo formulário de newsletter ou email.</p>
+    </section>
+
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="footer-content">
-            <p>&copy; 2025 BlogPro. Todos os direitos reservados.</p>
+            <p>&copy; 2025 MaranhãoNews. Todos os direitos reservados.</p>
             <div class="social-links">
                 <a href="#" class="social-link" aria-label="Twitter">
                     <span aria-hidden="true">🐦</span> Twitter

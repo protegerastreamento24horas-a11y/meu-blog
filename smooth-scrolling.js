@@ -71,8 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         navLinks.forEach(link => {
             link.classList.remove('active');
+            link.removeAttribute('aria-current');
             if (link.getAttribute('href') === `#${current}`) {
                 link.classList.add('active');
+                link.setAttribute('aria-current', 'page');
             }
         });
     }
@@ -86,24 +88,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const backToTopButton = document.createElement('button');
     backToTopButton.innerHTML = '↑';
     backToTopButton.className = 'back-to-top';
-    backToTopButton.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        opacity: 0;
-        transform: translateY(100px);
-        transition: all 0.3s ease;
-        z-index: 1000;
-        box-shadow: var(--shadow-lg);
-    `;
     
     document.body.appendChild(backToTopButton);
     
@@ -138,5 +122,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Formulário Netlify - envio automático habilitado');
             }
         });
+    });
+});
+
+// Menu mobile toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.querySelector('.mobile-menu-toggle');
+    const menu = document.getElementById('primary-menu');
+    if (!toggle || !menu) return;
+
+    toggle.addEventListener('click', function() {
+        const isOpen = menu.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // Fechar ao clicar em um link
+    menu.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (link) {
+            menu.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+
+    // Fechar com Esc
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            menu.classList.remove('is-open');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
     });
 });

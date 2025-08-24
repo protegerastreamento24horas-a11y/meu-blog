@@ -95,16 +95,10 @@
             this.button.disabled = true;
 
             try {
-                // Para Netlify, o formulário será enviado automaticamente
-                // Mantemos a simulação apenas para UX
-                await this.subscribeToNewsletter(this.input.value.trim());
-                
-                this.showSuccess('Inscrição realizada com sucesso!');
-                this.input.value = '';
-                
+                // Para Netlify Forms: permitir envio real após validação
+                this.form.submit();
             } catch (error) {
                 this.setError('Erro ao realizar inscrição. Tente novamente.');
-            } finally {
                 this.button.textContent = originalText;
                 this.button.disabled = false;
             }

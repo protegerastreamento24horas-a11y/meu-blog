@@ -11,8 +11,6 @@
   status = 200
 
 # Configurações para forms do Netlify
-[functions]
-  directory = "netlify/functions"
 
 # Headers de segurança
 [[headers]]

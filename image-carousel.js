@@ -2,6 +2,7 @@
 class ImageCarousel {
     constructor(carouselSelector) {
         this.carousel = document.querySelector(carouselSelector);
+        if (!this.carousel) return; // Evita erros quando não há carrossel
         this.slides = this.carousel.querySelectorAll('.carousel-slide');
         this.currentIndex = 0;
         this.init();
@@ -39,7 +40,9 @@ class ImageCarousel {
 
 // Inicializar carrossel quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', function() {
-    const carousel = new ImageCarousel('.image-carousel');
+    if (document.querySelector('.image-carousel')) {
+        new ImageCarousel('.image-carousel');
+    }
 });
 
 // Exemplo de uso

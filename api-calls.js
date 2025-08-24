@@ -48,30 +48,19 @@ class BlogAPI {
 
     async getNewsFromMaranhao(limit = 6) {
         try {
-            // API de notícias do Brasil - substitua por uma API real se disponível
-            const newsApiKey = 'sua_chave_api_aqui'; // Obtenha em https://newsapi.org
-            const response = await fetch(`https://newsapi.org/v2/everything?q=maranhão+política&language=pt&sortBy=publishedAt&apiKey=demo_key`);
-            
+            const url = `/.netlify/functions/fetch-news?q=${encodeURIComponent('maranhão política')}&limit=${limit}`;
+            const response = await fetch(url);
+
             if (!response.ok) {
                 throw new Error('Erro ao buscar notícias');
             }
 
-            const data = await response.json();
-            
-            if (data.articles && data.articles.length > 0) {
-                return data.articles.slice(0, limit).map((article, index) => ({
-                    id: index + 1,
-                    title: article.title,
-                    excerpt: article.description ? article.description.substring(0, 120) + '...' : 'Notícia sobre política do Maranhão...',
-                    date: this.formatDate(new Date(article.publishedAt)),
-                    image: article.urlToImage || this.getMaranhaoImage(),
-                    url: article.url,
-                    source: article.source.name
-                }));
+            const articles = await response.json();
+            if (Array.isArray(articles) && articles.length > 0) {
+                return articles.slice(0, limit);
             }
-            
+
             return this.getMaranhaoNewsFallback(limit);
-            
         } catch (error) {
             console.error('Error fetching Maranhão news:', error);
             return this.getMaranhaoNewsFallback(limit);
@@ -149,8 +138,8 @@ class BlogAPI {
     }
 
     async getPosts(limit = 10) {
-        // Usar notícias do Maranhão em vez de posts genéricos
-        return this.getMaranhaoNewsFallback(limit);
+        // Usar notícias reais quando implantado no Netlify; fallback local caso falhe
+        return this.getNewsFromMaranhao(limit);
     }
 
     async getPostById(id) {
@@ -339,7 +328,7 @@ class BlogStateManager {
         article.className = 'post-card';
         article.innerHTML = `
             <div class="post-image">
-                <img src="${post.image}" alt="${post.title}" loading="lazy">
+                <img src="${post.image}" alt="${post.title}" loading="lazy" width="400" height="300">
             </div>
             <div class="post-content">
                 <h3 class="post-title">${post.title}</h3>
@@ -347,7 +336,7 @@ class BlogStateManager {
                 <div class="post-meta">
                     <span class="post-date">${post.date}</span>
                     <span class="post-source">${post.source}</span>
-                    <a href="${post.url}" target="_blank" class="read-more" data-post-id="${post.id}">Ler notícia completa</a>
+                    <a href="${post.url}" target="_blank" rel="noopener noreferrer" class="read-more" data-post-id="${post.id}">Ler notícia completa</a>
                 </div>
             </div>
         `;
@@ -371,21 +360,16 @@ class BlogStateManager {
         const refreshBtn = document.createElement('button');
         refreshBtn.textContent = '🔄 Atualizar Notícias';
         refreshBtn.className = 'refresh-news-btn';
-        refreshBtn.style.cssText = `
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            margin: 1rem 0;
-            font-weight: 600;
-        `;
         refreshBtn.addEventListener('click', () => this.loadPosts());
         
         const postsContainer = document.querySelector('.posts');
         if (postsContainer) {
-            postsContainer.insertBefore(refreshBtn, postsContainer.firstChild.nextSibling);
+            const titleEl = postsContainer.querySelector('.section-title');
+            if (titleEl && titleEl.parentNode === postsContainer) {
+                titleEl.insertAdjacentElement('afterend', refreshBtn);
+            } else {
+                postsContainer.insertBefore(refreshBtn, postsContainer.firstChild);
+            }
         }
     }
 
@@ -396,37 +380,36 @@ class BlogStateManager {
 
         const modal = document.createElement('div');
         modal.className = 'news-modal';
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-        `;
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        modal.setAttribute('aria-label', post.title);
 
         modal.innerHTML = `
-            <div style="background: white; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;">
+            <div>
                 <h2>${post.title}</h2>
-                <img src="${post.image}" alt="${post.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 4px; margin: 1rem 0;">
+                <img src="${post.image}" alt="${post.title}">
                 <p>${post.excerpt}</p>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                <div class="news-modal__footer">
                     <span>Fonte: ${post.source}</span>
                     <span>Data: ${post.date}</span>
                 </div>
-                <button style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; margin-top: 1rem;">
+                <button class="news-modal__close">
                     Fechar
                 </button>
             </div>
         `;
 
-        modal.querySelector('button').addEventListener('click', () => {
+        const closeButton = modal.querySelector('button');
+        const onClose = () => {
             document.body.removeChild(modal);
-        });
+            document.removeEventListener('keydown', onEsc);
+        };
+        const onEsc = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        closeButton.addEventListener('click', onClose);
+        document.addEventListener('keydown', onEsc);
+        closeButton.focus();
 
         document.body.appendChild(modal);
     }
