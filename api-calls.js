@@ -46,9 +46,9 @@ class BlogAPI {
         }
     }
 
-    async getNewsFromMaranhao(limit = 6) {
+    async getNewsFromMaranhao(limit = 6, query = 'maranhão política') {
         try {
-            const url = `/.netlify/functions/fetch-news?q=${encodeURIComponent('maranhão política')}&limit=${limit}`;
+            const url = `/.netlify/functions/fetch-news?q=${encodeURIComponent(query)}&limit=${limit}`;
             const response = await fetch(url);
 
             if (!response.ok) {
@@ -137,9 +137,9 @@ class BlogAPI {
         return maranhaoNews.slice(0, limit);
     }
 
-    async getPosts(limit = 10) {
+    async getPosts(limit = 10, query = 'maranhão política') {
         // Usar notícias reais quando implantado no Netlify; fallback local caso falhe
-        return this.getNewsFromMaranhao(limit);
+        return this.getNewsFromMaranhao(limit, query);
     }
 
     async getPostById(id) {
@@ -288,10 +288,13 @@ class BlogStateManager {
     constructor() {
         this.api = new BlogAPI();
         this.currentPosts = [];
+        this.currentQuery = 'maranhão política';
+        this.searchTerm = '';
         this.init();
     }
 
     async init() {
+        this.setupUI();
         await this.loadPosts();
         this.setupEventListeners();
     }
@@ -299,7 +302,7 @@ class BlogStateManager {
     async loadPosts() {
         try {
             this.showLoading();
-            this.currentPosts = await this.api.getPosts(6);
+            this.currentPosts = await this.api.getNewsFromMaranhao(6, this.currentQuery);
             this.renderPosts();
         } catch (error) {
             console.error('Error loading posts:', error);
@@ -317,7 +320,11 @@ class BlogStateManager {
         const existingPosts = postsContainer.querySelectorAll('.post-card');
         existingPosts.forEach(post => post.remove());
 
-        this.currentPosts.forEach(post => {
+        const posts = this.searchTerm
+            ? this.currentPosts.filter(p => (p.title || '').toLowerCase().includes(this.searchTerm) || (p.excerpt || '').toLowerCase().includes(this.searchTerm))
+            : this.currentPosts;
+
+        posts.forEach(post => {
             const postElement = this.createPostElement(post);
             postsContainer.appendChild(postElement);
         });
@@ -328,7 +335,7 @@ class BlogStateManager {
         article.className = 'post-card';
         article.innerHTML = `
             <div class="post-image">
-                <img src="${post.image}" alt="${post.title}" loading="lazy" width="400" height="300">
+                <img src="${post.image}" alt="${post.title}" loading="lazy" decoding="async" width="400" height="300">
             </div>
             <div class="post-content">
                 <h3 class="post-title">${post.title}</h3>
@@ -341,6 +348,58 @@ class BlogStateManager {
             </div>
         `;
         return article;
+    }
+
+    setupUI() {
+        const postsContainer = document.querySelector('.posts');
+        if (!postsContainer) return;
+
+        const titleEl = postsContainer.querySelector('.section-title');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'posts-filters';
+        wrapper.innerHTML = `
+            <div class="filters-bar" role="region" aria-label="Filtros e busca">
+                <div class="filters-categories" role="tablist" aria-label="Categorias">
+                    <button type="button" class="filter-btn is-active" data-q="maranhão política">Todas</button>
+                    <button type="button" class="filter-btn" data-q="maranhão política">Política</button>
+                    <button type="button" class="filter-btn" data-q="maranhão economia OR infraestrutura">Economia</button>
+                    <button type="button" class="filter-btn" data-q="maranhão cultura OR eventos">Cultura</button>
+                </div>
+                <div class="filters-search">
+                    <label class="visually-hidden" for="search-posts">Pesquisar</label>
+                    <input id="search-posts" type="search" class="search-input" placeholder="Pesquisar notícias..." autocomplete="off">
+                </div>
+            </div>
+        `;
+
+        if (titleEl) {
+            titleEl.insertAdjacentElement('afterend', wrapper);
+        } else {
+            postsContainer.insertBefore(wrapper, postsContainer.firstChild);
+        }
+
+        this.filtersContainer = wrapper;
+        this.searchInput = wrapper.querySelector('.search-input');
+        this.categoryButtons = Array.from(wrapper.querySelectorAll('.filter-btn'));
+
+        if (this.searchInput) {
+            this.searchInput.addEventListener('input', (e) => {
+                this.searchTerm = String(e.target.value || '').toLowerCase();
+                this.renderPosts();
+            });
+        }
+
+        if (this.categoryButtons && this.categoryButtons.length) {
+            this.categoryButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.categoryButtons.forEach(b => b.classList.remove('is-active'));
+                    btn.classList.add('is-active');
+                    const q = btn.getAttribute('data-q') || 'maranhão política';
+                    this.currentQuery = q;
+                    this.loadPosts();
+                });
+            });
+        }
     }
 
     setupEventListeners() {
@@ -364,8 +423,11 @@ class BlogStateManager {
         
         const postsContainer = document.querySelector('.posts');
         if (postsContainer) {
+            const filtersBar = postsContainer.querySelector('.posts-filters');
             const titleEl = postsContainer.querySelector('.section-title');
-            if (titleEl && titleEl.parentNode === postsContainer) {
+            if (filtersBar) {
+                filtersBar.insertAdjacentElement('afterend', refreshBtn);
+            } else if (titleEl && titleEl.parentNode === postsContainer) {
                 titleEl.insertAdjacentElement('afterend', refreshBtn);
             } else {
                 postsContainer.insertBefore(refreshBtn, postsContainer.firstChild);
@@ -415,13 +477,42 @@ class BlogStateManager {
     }
 
     showLoading() {
-        // Implementar indicador de carregamento
-        console.log('Loading...');
+        const postsContainer = document.querySelector('.posts');
+        if (!postsContainer) return;
+        postsContainer.setAttribute('aria-busy', 'true');
+
+        // Remove skeletons anteriores
+        postsContainer.querySelectorAll('.post-card').forEach(el => el.remove());
+
+        // Inserir skeletons
+        const skeletonCount = 3;
+        for (let i = 0; i < skeletonCount; i++) {
+            const sk = document.createElement('article');
+            sk.className = 'post-card';
+            sk.innerHTML = `
+                <div class="post-image" style="background: linear-gradient(90deg, #f1f5f9, #e2e8f0, #f1f5f9); background-size: 200% 100%; animation: shimmer 1.2s infinite; height: 220px;"></div>
+                <div class="post-content">
+                    <div style="height: 22px; width: 70%; background: #e5e7eb; border-radius: 8px; margin-bottom: 12px; animation: shimmer 1.2s infinite;"></div>
+                    <div style="height: 14px; width: 100%; background: #eef2f7; border-radius: 8px; margin-bottom: 8px; animation: shimmer 1.2s infinite;"></div>
+                    <div style="height: 14px; width: 80%; background: #eef2f7; border-radius: 8px; margin-bottom: 16px; animation: shimmer 1.2s infinite;"></div>
+                </div>`;
+            postsContainer.appendChild(sk);
+        }
+
+        // Animação shimmer global (fallback inline)
+        const styleId = 'shimmer-style';
+        if (!document.getElementById(styleId)) {
+            const style = document.createElement('style');
+            style.id = styleId;
+            style.textContent = `@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`;
+            document.head.appendChild(style);
+        }
     }
 
     hideLoading() {
-        // Implementar ocultação do indicador de carregamento
-        console.log('Loading complete');
+        const postsContainer = document.querySelector('.posts');
+        if (!postsContainer) return;
+        postsContainer.removeAttribute('aria-busy');
     }
 
     showError(message) {
