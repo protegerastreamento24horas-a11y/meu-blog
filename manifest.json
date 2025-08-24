@@ -1,21 +1,99 @@
 {
+  "name": "MaranhãoNews - Portal de Notícias",
   "short_name": "MaranhãoNews",
-  "name": "MaranhãoNews - Notícias do Maranhão",
+  "description": "Portal profissional de notícias do Maranhão com atualizações em tempo real",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["news", "productivity"],
   "icons": [
     {
-      "src": "favicon-192x192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23dc2626'/><text x='50' y='65' font-size='60' text-anchor='middle' fill='white'>📰</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     },
     {
-      "src": "favicon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23dc2626'/><text x='50' y='65' font-size='60' text-anchor='middle' fill='white'>📰</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
-  "start_url": "/",
-  "background_color": "#ffffff",
-  "display": "standalone",
-  "scope": "/",
-  "theme_color": "#2563eb"
+  "shortcuts": [
+    {
+      "name": "Política",
+      "short_name": "Política",
+      "description": "Notícias de política do Maranhão",
+      "url": "/#politica",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='60' text-anchor='middle'>🏛️</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Economia",
+      "short_name": "Economia",
+      "description": "Notícias de economia do Maranhão",
+      "url": "/#economia",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='60' text-anchor='middle'>💰</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Esportes",
+      "short_name": "Esportes",
+      "description": "Notícias de esportes do Maranhão",
+      "url": "/#esportes",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='60' text-anchor='middle'>⚽</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Cultura",
+      "short_name": "Cultura",
+      "description": "Notícias de cultura do Maranhão",
+      "url": "/#cultura",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='65' font-size='60' text-anchor='middle'>🎭</text></svg>",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=1280&h=720&fit=crop",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide",
+      "label": "Portal MaranhãoNews - Visão Desktop"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=750&h=1334&fit=crop",
+      "sizes": "750x1334",
+      "type": "image/jpeg",
+      "platform": "narrow",
+      "label": "Portal MaranhãoNews - Visão Mobile"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
 }

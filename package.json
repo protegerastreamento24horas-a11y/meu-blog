@@ -1,10 +1,38 @@
 {
   "name": "maranhaonews",
   "version": "1.0.0",
+  "description": "Portal profissional de notícias do Maranhão com atualizações em tempo real",
+  "main": "index.html",
   "scripts": {
-    "build": "esbuild style.css --bundle --minify --outfile=dist/style.min.css && esbuild api-calls.js form-validation.js smooth-scrolling.js image-carousel.js --bundle --minify --outfile=dist/scripts.min.js"
+    "dev": "netlify dev",
+    "build": "echo 'Build completed'",
+    "deploy": "netlify deploy --prod"
+  },
+  "keywords": [
+    "news",
+    "maranhao",
+    "portal",
+    "noticias",
+    "brasil",
+    "real-time"
+  ],
+  "author": "MaranhãoNews Team",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^2.6.7"
   },
   "devDependencies": {
-    "esbuild": "^0.23.0"
-  }
+    "netlify-cli": "^17.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/maranhaonews.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/maranhaonews/issues"
+  },
+  "homepage": "https://maranhaonews.netlify.app"
 }

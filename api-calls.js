@@ -1,642 +1,792 @@
-// Sistema de chamadas API para o blog
-class BlogAPI {
-    constructor(baseURL = 'https://jsonplaceholder.typicode.com') {
-        this.baseURL = baseURL;
-        this.cache = new Map();
-        this.cacheDuration = 5 * 60 * 1000; // 5 minutos em milissegundos
-    }
-
-    async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
-        const cacheKey = `${url}-${JSON.stringify(options)}`;
-        
-        // Verificar cache
-        const cached = this.cache.get(cacheKey);
-        if (cached && Date.now() - cached.timestamp < this.cacheDuration) {
-            return cached.data;
-        }
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
-        };
-
-        try {
-            const response = await fetch(url, config);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // Armazenar em cache
-            this.cache.set(cacheKey, {
-                data,
-                timestamp: Date.now()
-            });
-
-            return data;
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    }
-
-    async getNewsFromMaranhao(limit = 6, query = 'maranhão política') {
-        try {
-            const url = `/.netlify/functions/fetch-news?q=${encodeURIComponent(query)}&limit=${limit}`;
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error('Erro ao buscar notícias');
-            }
-
-            const articles = await response.json();
-            if (Array.isArray(articles) && articles.length > 0) {
-                return articles.slice(0, limit);
-            }
-
-            return this.getMaranhaoNewsFallback(limit);
-        } catch (error) {
-            console.error('Error fetching Maranhão news:', error);
-            return this.getMaranhaoNewsFallback(limit);
-        }
-    }
-
-    getMaranhaoImage() {
-        const maranhaoImages = [
-            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop'
-        ];
-        return maranhaoImages[Math.floor(Math.random() * maranhaoImages.length)];
-    }
-
-    getMaranhaoNewsFallback(limit) {
-        const maranhaoNews = [
-            {
-                id: 1,
-                title: 'Governo do Maranhão anuncia novos investimentos em infraestrutura',
-                excerpt: 'O governador anunciou um pacote de investimentos para melhorar a infraestrutura do estado...',
-                date: this.formatDate(new Date()),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            },
-            {
-                id: 2,
-                title: 'Assembleia Legislativa discute reforma tributária estadual',
-                excerpt: 'Deputados estaduais debatem proposta de reforma do sistema tributário do Maranhão...',
-                date: this.formatDate(new Date(Date.now() - 86400000)),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            },
-            {
-                id: 3,
-                title: 'Prefeitura de São Luís lança programa de urbanização',
-                excerpt: 'Novo projeto visa melhorar a qualidade de vida nas periferias da capital maranhense...',
-                date: this.formatDate(new Date(Date.now() - 172800000)),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            },
-            {
-                id: 4,
-                title: 'Maranhão registra crescimento econômico acima da média nacional',
-                excerpt: 'Dados mostram que o estado teve desempenho positivo no último trimestre...',
-                date: this.formatDate(new Date(Date.now() - 259200000)),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            },
-            {
-                id: 5,
-                title: 'Secretaria de Educação anuncia reforma em escolas estaduais',
-                excerpt: 'Investimentos em educação: 50 escolas serão reformadas no próximo semestre...',
-                date: this.formatDate(new Date(Date.now() - 345600000)),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            },
-            {
-                id: 6,
-                title: 'Turismo no Maranhão: Novos projetos para Lençóis Maranhenses',
-                excerpt: 'Governo estadual anuncia planos para ampliar estrutura turística no parque nacional...',
-                date: this.formatDate(new Date(Date.now() - 432000000)),
-                image: this.getMaranhaoImage(),
-                url: '#',
-                source: 'BlogPro Maranhão'
-            }
-        ];
-        return maranhaoNews.slice(0, limit);
-    }
-
-    async getPosts(limit = 10, query = 'maranhão política') {
-        // Usar notícias reais quando implantado no Netlify; fallback local caso falhe
-        return this.getNewsFromMaranhao(limit, query);
-    }
-
-    async getPostById(id) {
-        try {
-            const post = await this.request(`/posts/${id}`);
-            const comments = await this.request(`/posts/${id}/comments`);
-            
-            return {
-                ...post,
-                comments: comments.slice(0, 5),
-                date: this.formatDate(new Date()),
-                image: this.getRandomImage(),
-                author: 'Autor do Blog'
-            };
-        } catch (error) {
-            console.error('Error fetching post:', error);
-            return this.getFallbackPost(id);
-        }
-    }
-
-    async getComments(postId, limit = 5) {
-        try {
-            const comments = await this.request(`/posts/${postId}/comments`);
-            return comments.slice(0, limit);
-        } catch (error) {
-            console.error('Error fetching comments:', error);
-            return this.getFallbackComments();
-        }
-    }
-
-    async subscribeToNewsletter(email) {
-        // Simulação de inscrição - substitua pela sua API real
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    success: true,
-                    message: 'Inscrição realizada com sucesso!',
-                    email: email
-                });
-            }, 1000);
-        });
-    }
-
-    async submitContactForm(formData) {
-        // Simulação de envio de formulário - substitua pela sua API real
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (Math.random() > 0.1) {
-                    resolve({
-                        success: true,
-                        message: 'Mensagem enviada com sucesso!'
-                    });
-                } else {
-                    reject(new Error('Erro ao enviar mensagem'));
-                }
-            }, 1500);
-        });
-    }
-
-    // Métodos utilitários
-    formatDate(date) {
-        return new Intl.DateTimeFormat('pt-BR', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        }).format(date);
-    }
-
-    getRandomImage() {
-        const images = [
-            'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=400&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=400&h=300&fit=crop'
-        ];
-        return images[Math.floor(Math.random() * images.length)];
-    }
-
-    getFallbackPosts(limit) {
-        const fallbackPosts = [
-            {
-                id: 1,
-                title: 'Como criar um blog profissional',
-                excerpt: 'Aprenda os passos essenciais para criar um blog com design moderno e funcionalidades profissionais...',
-                date: '23 Ago 2025',
-                image: this.getRandomImage()
-            },
-            {
-                id: 2,
-                title: 'Dicas de design para web',
-                excerpt: 'Descubra as melhores práticas de design web para criar interfaces atraentes e funcionais...',
-                date: '22 Ago 2025',
-                image: this.getRandomImage()
-            }
-        ];
-        return fallbackPosts.slice(0, limit);
-    }
-
-    getFallbackPost(id) {
-        return {
-            id: id,
-            title: 'Post de exemplo',
-            body: 'Este é um conteúdo de exemplo para demonstração. Em uma implementação real, este conteúdo viria de uma API ou banco de dados.',
-            date: this.formatDate(new Date()),
-            image: this.getRandomImage(),
-            author: 'Autor do Blog',
-            comments: this.getFallbackComments()
-        };
-    }
-
-    getFallbackComments() {
-        return [
-            {
-                id: 1,
-                name: 'João Silva',
-                email: 'joao@email.com',
-                body: 'Excelente post! Muito útil para iniciantes.'
-            },
-            {
-                id: 2,
-                name: 'Maria Santos',
-                email: 'maria@email.com',
-                body: 'Gostei muito das dicas, vou implementar no meu blog.'
-            }
-        ];
-    }
-
-    // Limpar cache
-    clearCache() {
-        this.cache.clear();
-    }
-
-    // Verificar status da API
-    async checkHealth() {
-        try {
-            const response = await fetch(`${this.baseURL}/posts/1`);
-            return response.ok;
-        } catch (error) {
-            return false;
-        }
-    }
-}
-
-// Gerenciador de estado para o blog
-class BlogStateManager {
+// MaranhãoNews - Professional News Portal JavaScript
+class NewsPortal {
     constructor() {
-        this.api = new BlogAPI();
-        this.currentPosts = [];
-        this.currentQuery = 'maranhão política';
-        this.searchTerm = '';
+        this.newsCache = new Map();
+        this.weatherCache = null;
+        this.updateInterval = 5 * 60 * 1000; // 5 minutes
+        this.currentCategory = 'all';
+        this.newsOffset = 0;
+        this.newsPerPage = 10;
+        this.isLoading = false;
+        
+        // API Keys (In production, these should be environment variables)
+        this.newsAPIKey = 'demo'; // Replace with actual API key
+        this.weatherAPIKey = 'demo'; // Replace with actual API key
+        
         this.init();
     }
 
     async init() {
-        this.setupUI();
-        await this.loadPosts();
         this.setupEventListeners();
-    }
-
-    async loadPosts() {
+        this.showLoadingOverlay();
+        
         try {
-            this.showLoading();
-            this.currentPosts = await this.api.getNewsFromMaranhao(6, this.currentQuery);
-            this.renderPosts();
-            this.renderFeatured();
-            this.renderMostRead();
+            await Promise.all([
+                this.loadBreakingNews(),
+                this.loadFeaturedNews(),
+                this.loadNews(),
+                this.loadWeather(),
+                this.loadTrendingTopics()
+            ]);
+            
+            this.startAutoUpdate();
+            this.updateStats();
         } catch (error) {
-            console.error('Error loading posts:', error);
-            this.showError('Erro ao carregar posts');
+            console.error('Error initializing portal:', error);
+            this.showError('Erro ao carregar o portal. Tentando novamente...');
+            setTimeout(() => this.init(), 5000);
         } finally {
-            this.hideLoading();
+            this.hideLoadingOverlay();
         }
     }
 
-    renderPosts() {
-        const postsContainer = document.querySelector('.posts');
-        if (!postsContainer) return;
+    setupEventListeners() {
+        // Search functionality
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchOverlay = document.getElementById('search-overlay');
+        const searchClose = document.querySelector('.search-close');
+        const searchInput = document.querySelector('.search-input');
 
-        // Limpar posts existentes (exceto o título)
-        const existingPosts = postsContainer.querySelectorAll('.post-card');
-        existingPosts.forEach(post => post.remove());
+        searchToggle?.addEventListener('click', () => {
+            searchOverlay.classList.add('active');
+            searchInput.focus();
+        });
 
-        const posts = this.searchTerm
-            ? this.currentPosts.filter(p => (p.title || '').toLowerCase().includes(this.searchTerm) || (p.excerpt || '').toLowerCase().includes(this.searchTerm))
-            : this.currentPosts;
+        searchClose?.addEventListener('click', () => {
+            searchOverlay.classList.remove('active');
+        });
 
-        posts.forEach(post => {
-            const postElement = this.createPostElement(post);
-            postsContainer.appendChild(postElement);
+        searchInput?.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                this.performSearch(e.target.value);
+                searchOverlay.classList.remove('active');
+            }
+        });
+
+        // Category filters
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.currentCategory = btn.dataset.category;
+                this.newsOffset = 0;
+                this.loadNews();
+            });
+        });
+
+        // Load more button
+        const loadMoreBtn = document.getElementById('load-more');
+        loadMoreBtn?.addEventListener('click', () => {
+            this.newsOffset += this.newsPerPage;
+            this.loadNews(true);
+        });
+
+        // Refresh buttons
+        document.getElementById('refresh-featured')?.addEventListener('click', () => {
+            this.loadFeaturedNews();
+        });
+
+        // Newsletter form
+        const newsletterForm = document.getElementById('newsletter-form');
+        newsletterForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.subscribeNewsletter(new FormData(e.target));
+        });
+
+        // Back to top button
+        const backToTop = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        backToTop?.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile menu toggle
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        mobileToggle?.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close search on escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchOverlay.classList.remove('active');
+            }
         });
     }
 
-    createPostElement(post) {
-        const article = document.createElement('article');
-        article.className = 'post-card';
-        article.innerHTML = `
-            <div class="post-image">
-                <img src="${post.image}" alt="${post.title}" loading="lazy" decoding="async" width="400" height="300">
-            </div>
-            <div class="post-content">
-                <h3 class="post-title">${post.title}</h3>
-                <p class="post-excerpt">${post.excerpt}</p>
-                <div class="post-meta">
-                    <span class="post-date">${post.date}</span>
-                    <span class="post-source">${post.source}</span>
-                    <a href="${post.url}" target="_blank" rel="noopener noreferrer" class="read-more" data-post-id="${post.id}">Ler notícia completa</a>
-                </div>
-            </div>
-        `;
-        return article;
+    async loadBreakingNews() {
+        try {
+            const news = await this.fetchNews('breaking', 1);
+            const breakingText = document.getElementById('breaking-text');
+            
+            if (news.length > 0) {
+                breakingText.textContent = news[0].title;
+            } else {
+                breakingText.textContent = 'Acompanhe as últimas notícias do Maranhão em tempo real';
+            }
+        } catch (error) {
+            console.error('Error loading breaking news:', error);
+            document.getElementById('breaking-text').textContent = 'Erro ao carregar notícias urgentes';
+        }
     }
 
-    renderFeatured() {
-        const grid = document.querySelector('.featured-grid');
+    async loadFeaturedNews() {
+        try {
+            const news = await this.fetchNews('featured', 6);
+            this.renderFeaturedNews(news);
+        } catch (error) {
+            console.error('Error loading featured news:', error);
+            this.renderFeaturedNews(this.getFallbackNews(6));
+        }
+    }
+
+    async loadNews(append = false) {
+        if (this.isLoading) return;
+        
+        this.isLoading = true;
+        const loadMoreBtn = document.getElementById('load-more');
+        
+        try {
+            if (!append) {
+                this.showNewsLoading();
+            } else {
+                loadMoreBtn.textContent = 'Carregando...';
+                loadMoreBtn.disabled = true;
+            }
+
+            const news = await this.fetchNews(this.currentCategory, this.newsPerPage, this.newsOffset);
+            this.renderNews(news, append);
+            
+        } catch (error) {
+            console.error('Error loading news:', error);
+            if (!append) {
+                this.renderNews(this.getFallbackNews(this.newsPerPage), false);
+            }
+        } finally {
+            this.isLoading = false;
+            loadMoreBtn.textContent = 'Carregar mais notícias';
+            loadMoreBtn.disabled = false;
+            this.hideNewsLoading();
+        }
+    }
+
+    async fetchNews(category = 'all', limit = 10, offset = 0) {
+        const cacheKey = `${category}-${limit}-${offset}`;
+        
+        // Check cache first
+        if (this.newsCache.has(cacheKey)) {
+            const cached = this.newsCache.get(cacheKey);
+            if (Date.now() - cached.timestamp < this.updateInterval) {
+                return cached.data;
+            }
+        }
+
+        try {
+            // Try to fetch from NewsAPI
+            const query = this.getCategoryQuery(category);
+            const response = await fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=pt&sortBy=publishedAt&pageSize=${limit}&page=${Math.floor(offset / limit) + 1}&apiKey=${this.newsAPIKey}`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const processedNews = this.processNewsData(data.articles);
+                
+                // Cache the result
+                this.newsCache.set(cacheKey, {
+                    data: processedNews,
+                    timestamp: Date.now()
+                });
+                
+                return processedNews;
+            }
+        } catch (error) {
+            console.error('NewsAPI error:', error);
+        }
+
+        // Fallback to local news
+        return this.getFallbackNews(limit, category);
+    }
+
+    getCategoryQuery(category) {
+        const queries = {
+            all: 'Maranhão OR "São Luís" OR "Imperatriz" OR "Caxias"',
+            politics: 'Maranhão política OR governador OR assembleia legislativa',
+            economy: 'Maranhão economia OR desenvolvimento OR investimento',
+            sports: 'Maranhão esporte OR futebol OR "Sampaio Corrêa" OR "Moto Club"',
+            culture: 'Maranhão cultura OR festa OR tradição OR "bumba meu boi"',
+            breaking: 'Maranhão urgente OR última hora'
+        };
+        
+        return queries[category] || queries.all;
+    }
+
+    processNewsData(articles) {
+        return articles.map((article, index) => ({
+            id: `news-${Date.now()}-${index}`,
+            title: article.title,
+            excerpt: article.description || article.content?.substring(0, 150) + '...',
+            content: article.content,
+            image: article.urlToImage || this.getPlaceholderImage(),
+            url: article.url,
+            source: article.source.name,
+            author: article.author,
+            publishedAt: new Date(article.publishedAt),
+            category: this.inferCategory(article.title + ' ' + article.description)
+        }));
+    }
+
+    inferCategory(text) {
+        const categories = {
+            politics: ['política', 'governo', 'prefeito', 'deputado', 'senador', 'eleição'],
+            economy: ['economia', 'investimento', 'empresa', 'negócio', 'mercado', 'emprego'],
+            sports: ['esporte', 'futebol', 'jogo', 'campeonato', 'time', 'atleta'],
+            culture: ['cultura', 'festa', 'arte', 'música', 'teatro', 'tradição']
+        };
+
+        const lowerText = text.toLowerCase();
+        
+        for (const [category, keywords] of Object.entries(categories)) {
+            if (keywords.some(keyword => lowerText.includes(keyword))) {
+                return category;
+            }
+        }
+        
+        return 'general';
+    }
+
+    getFallbackNews(limit, category = 'all') {
+        const fallbackNews = [
+            {
+                id: 'fallback-1',
+                title: 'Governo do Maranhão anuncia novos investimentos em infraestrutura',
+                excerpt: 'O governador anunciou um pacote de investimentos de R$ 500 milhões para melhorar a infraestrutura do estado, incluindo rodovias, pontes e saneamento básico.',
+                image: 'https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(),
+                category: 'politics'
+            },
+            {
+                id: 'fallback-2',
+                title: 'São Luís recebe investimento de R$ 200 milhões em turismo',
+                excerpt: 'A capital maranhense será contemplada com novos projetos turísticos que prometem gerar milhares de empregos e atrair mais visitantes.',
+                image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(Date.now() - 3600000),
+                category: 'economy'
+            },
+            {
+                id: 'fallback-3',
+                title: 'Lençóis Maranhenses bate recorde de visitantes em 2024',
+                excerpt: 'O parque nacional registrou mais de 300 mil visitantes este ano, superando todas as expectativas e consolidando o Maranhão como destino turístico.',
+                image: 'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(Date.now() - 7200000),
+                category: 'culture'
+            },
+            {
+                id: 'fallback-4',
+                title: 'Sampaio Corrêa se prepara para nova temporada',
+                excerpt: 'O time maranhense anunciou a contratação de novos jogadores e promete uma temporada competitiva no campeonato estadual.',
+                image: 'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(Date.now() - 10800000),
+                category: 'sports'
+            },
+            {
+                id: 'fallback-5',
+                title: 'Festival de Inverno de Bonito movimenta economia local',
+                excerpt: 'O evento cultural atraiu milhares de pessoas e gerou uma receita estimada em R$ 5 milhões para a região.',
+                image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(Date.now() - 14400000),
+                category: 'culture'
+            },
+            {
+                id: 'fallback-6',
+                title: 'Maranhão lidera ranking de energias renováveis no Nordeste',
+                excerpt: 'O estado se destaca na produção de energia eólica e solar, contribuindo significativamente para a matriz energética nacional.',
+                image: 'https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop',
+                url: '#',
+                source: 'MaranhãoNews',
+                publishedAt: new Date(Date.now() - 18000000),
+                category: 'economy'
+            }
+        ];
+
+        let filteredNews = fallbackNews;
+        
+        if (category !== 'all') {
+            filteredNews = fallbackNews.filter(news => news.category === category);
+        }
+        
+        return filteredNews.slice(0, limit);
+    }
+
+    getPlaceholderImage() {
+        const images = [
+            'https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1544984243-ec57ea16fe25?w=400&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=400&h=300&fit=crop'
+        ];
+        
+        return images[Math.floor(Math.random() * images.length)];
+    }
+
+    renderFeaturedNews(news) {
+        const grid = document.getElementById('featured-grid');
         if (!grid) return;
+
         grid.innerHTML = '';
-        const featured = this.currentPosts.slice(0, 3);
-        featured.forEach(item => {
+        
+        news.slice(0, 6).forEach(item => {
             const card = document.createElement('article');
             card.className = 'featured-card';
             card.innerHTML = `
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="featured-link" aria-label="Abrir notícia destaque: ${item.title}">
-                    <div class="featured-media">
-                        <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" width="640" height="360" />
-                        <span class="featured-badge">Destaque</span>
+                <img src="${item.image}" alt="${item.title}" class="featured-image" loading="lazy">
+                <div class="featured-content">
+                    <span class="featured-category">${this.getCategoryName(item.category)}</span>
+                    <h3 class="featured-title">
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+                    </h3>
+                    <p class="featured-excerpt">${item.excerpt}</p>
+                    <div class="featured-meta">
+                        <span class="featured-source">${item.source}</span>
+                        <time class="featured-time" datetime="${item.publishedAt.toISOString()}">
+                            ${this.formatTimeAgo(item.publishedAt)}
+                        </time>
                     </div>
-                    <div class="featured-info">
-                        <h3 class="featured-title">${item.title}</h3>
-                        <p class="featured-excerpt">${item.excerpt || ''}</p>
-                        <div class="featured-meta">
-                            <span>${item.source || ''}</span>
-                            <span>${item.date || ''}</span>
-                        </div>
-                    </div>
-                </a>
+                </div>
             `;
             grid.appendChild(card);
         });
     }
 
-    renderMostRead() {
-        const list = document.querySelector('#most-read-widget .most-read-list');
-        if (!list) return;
-        list.innerHTML = '';
-        const items = this.currentPosts.slice(0, 5);
-        items.forEach((item, idx) => {
-            const li = document.createElement('li');
-            li.className = 'most-read-item';
-            li.innerHTML = `
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="most-read-link">
-                    <span class="most-read-rank">${idx + 1}</span>
-                    <span class="most-read-title">${item.title}</span>
-                </a>`;
-            list.appendChild(li);
+    renderNews(news, append = false) {
+        const container = document.getElementById('news-items');
+        if (!container) return;
+
+        if (!append) {
+            container.innerHTML = '';
+        }
+
+        news.forEach(item => {
+            const article = document.createElement('article');
+            article.className = 'news-item';
+            article.innerHTML = `
+                <img src="${item.image}" alt="${item.title}" class="news-image" loading="lazy">
+                <div class="news-content">
+                    <span class="news-category">${this.getCategoryName(item.category)}</span>
+                    <h3 class="news-title">
+                        <a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}</a>
+                    </h3>
+                    <p class="news-excerpt">${item.excerpt}</p>
+                    <div class="news-meta">
+                        <span class="news-source">${item.source}</span>
+                        <time class="news-time" datetime="${item.publishedAt.toISOString()}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12,6 12,12 16,14"></polyline>
+                            </svg>
+                            ${this.formatTimeAgo(item.publishedAt)}
+                        </time>
+                    </div>
+                </div>
+            `;
+            container.appendChild(article);
         });
     }
 
-    setupUI() {
-        const postsContainer = document.querySelector('.posts');
-        if (!postsContainer) return;
-
-        const titleEl = postsContainer.querySelector('.section-title');
-        const wrapper = document.createElement('div');
-        wrapper.className = 'posts-filters';
-        wrapper.innerHTML = `
-            <div class="filters-bar" role="region" aria-label="Filtros e busca">
-                <div class="filters-categories" role="tablist" aria-label="Categorias">
-                    <button type="button" class="filter-btn is-active" data-q="maranhão política">Todas</button>
-                    <button type="button" class="filter-btn" data-q="maranhão política">Política</button>
-                    <button type="button" class="filter-btn" data-q="maranhão economia OR infraestrutura">Economia</button>
-                    <button type="button" class="filter-btn" data-q="maranhão cultura OR eventos">Cultura</button>
-                </div>
-                <div class="filters-search">
-                    <label class="visually-hidden" for="search-posts">Pesquisar</label>
-                    <input id="search-posts" type="search" class="search-input" placeholder="Pesquisar notícias..." autocomplete="off">
-                </div>
-            </div>
-        `;
-
-        if (titleEl) {
-            titleEl.insertAdjacentElement('afterend', wrapper);
-        } else {
-            postsContainer.insertBefore(wrapper, postsContainer.firstChild);
-        }
-
-        this.filtersContainer = wrapper;
-        this.searchInput = wrapper.querySelector('.search-input');
-        this.categoryButtons = Array.from(wrapper.querySelectorAll('.filter-btn'));
-
-        if (this.searchInput) {
-            this.searchInput.addEventListener('input', (e) => {
-                this.searchTerm = String(e.target.value || '').toLowerCase();
-                this.renderPosts();
-            });
-        }
-
-        if (this.categoryButtons && this.categoryButtons.length) {
-            this.categoryButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    this.categoryButtons.forEach(b => b.classList.remove('is-active'));
-                    btn.classList.add('is-active');
-                    const q = btn.getAttribute('data-q') || 'maranhão política';
-                    this.currentQuery = q;
-                    this.loadPosts();
-                });
-            });
-        }
-    }
-
-    setupEventListeners() {
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('read-more')) {
-                e.preventDefault();
-                const postUrl = e.target.href;
-                if (postUrl && postUrl !== '#') {
-                    window.open(postUrl, '_blank');
-                } else {
-                    this.showPostDetail(e.target.dataset.postId);
-                }
+    async loadWeather() {
+        try {
+            // Try to get weather from cache first
+            if (this.weatherCache && Date.now() - this.weatherCache.timestamp < this.updateInterval) {
+                this.renderWeather(this.weatherCache.data);
+                return;
             }
-        });
 
-        // Botão para atualizar notícias
-        const refreshBtn = document.createElement('button');
-        refreshBtn.textContent = '🔄 Atualizar Notícias';
-        refreshBtn.className = 'refresh-news-btn';
-        refreshBtn.addEventListener('click', () => this.loadPosts());
-        
-        const postsContainer = document.querySelector('.posts');
-        if (postsContainer) {
-            const filtersBar = postsContainer.querySelector('.posts-filters');
-            const titleEl = postsContainer.querySelector('.section-title');
-            if (filtersBar) {
-                filtersBar.insertAdjacentElement('afterend', refreshBtn);
-            } else if (titleEl && titleEl.parentNode === postsContainer) {
-                titleEl.insertAdjacentElement('afterend', refreshBtn);
+            // Try OpenWeatherMap API
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=São Luís,BR&appid=${this.weatherAPIKey}&units=metric&lang=pt`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const weatherData = {
+                    temp: Math.round(data.main.temp),
+                    feelsLike: Math.round(data.main.feels_like),
+                    humidity: data.main.humidity,
+                    windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
+                    description: data.weather[0].description,
+                    icon: data.weather[0].icon
+                };
+                
+                this.weatherCache = {
+                    data: weatherData,
+                    timestamp: Date.now()
+                };
+                
+                this.renderWeather(weatherData);
             } else {
-                postsContainer.insertBefore(refreshBtn, postsContainer.firstChild);
+                throw new Error('Weather API failed');
             }
+        } catch (error) {
+            console.error('Error loading weather:', error);
+            this.renderWeather(this.getFallbackWeather());
         }
     }
 
-    async showPostDetail(postId) {
-        // Modal simples para mostrar detalhes da notícia
-        const post = this.currentPosts.find(p => p.id == postId);
-        if (!post) return;
+    getFallbackWeather() {
+        return {
+            temp: 28,
+            feelsLike: 32,
+            humidity: 75,
+            windSpeed: 15,
+            description: 'parcialmente nublado',
+            icon: '02d'
+        };
+    }
 
-        const modal = document.createElement('div');
-        modal.className = 'news-modal';
-        modal.setAttribute('role', 'dialog');
-        modal.setAttribute('aria-modal', 'true');
-        modal.setAttribute('aria-label', post.title);
+    renderWeather(weather) {
+        // Header weather
+        const headerTemp = document.querySelector('.weather-temp');
+        if (headerTemp) {
+            headerTemp.textContent = `${weather.temp}°C`;
+        }
 
-        modal.innerHTML = `
-            <div>
-                <h2>${post.title}</h2>
-                <img src="${post.image}" alt="${post.title}">
-                <p class="post-lead">${this.generateLead(post.title, post.excerpt)}</p>
-                <p>${post.excerpt}</p>
-                <div class="news-modal__footer">
-                    <span>Fonte: ${post.source}</span>
-                    <span>Data: ${post.date}</span>
+        // Sidebar weather
+        const tempLarge = document.getElementById('temp-large');
+        const weatherDesc = document.getElementById('weather-desc');
+        const feelsLike = document.getElementById('feels-like');
+        const humidity = document.getElementById('humidity');
+        const windSpeed = document.getElementById('wind-speed');
+
+        if (tempLarge) tempLarge.textContent = `${weather.temp}°C`;
+        if (weatherDesc) weatherDesc.textContent = weather.description;
+        if (feelsLike) feelsLike.textContent = `${weather.feelsLike}°C`;
+        if (humidity) humidity.textContent = `${weather.humidity}%`;
+        if (windSpeed) windSpeed.textContent = `${weather.windSpeed} km/h`;
+    }
+
+    async loadTrendingTopics() {
+        try {
+            const trending = [
+                { title: 'Eleições 2024', rank: 1 },
+                { title: 'Lençóis Maranhenses', rank: 2 },
+                { title: 'São Luís Centro Histórico', rank: 3 },
+                { title: 'Bumba Meu Boi', rank: 4 },
+                { title: 'Porto do Itaqui', rank: 5 }
+            ];
+            
+            this.renderTrending(trending);
+        } catch (error) {
+            console.error('Error loading trending topics:', error);
+        }
+    }
+
+    renderTrending(trending) {
+        const container = document.getElementById('trending-list');
+        if (!container) return;
+
+        container.innerHTML = '';
+        
+        trending.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'trending-item';
+            div.innerHTML = `
+                <span class="trending-rank">${item.rank}</span>
+                <span class="trending-title">${item.title}</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    async performSearch(query) {
+        if (!query.trim()) return;
+        
+        this.showLoadingOverlay();
+        
+        try {
+            const searchResults = await this.fetchNews('all', 20);
+            const filteredResults = searchResults.filter(news => 
+                news.title.toLowerCase().includes(query.toLowerCase()) ||
+                news.excerpt.toLowerCase().includes(query.toLowerCase())
+            );
+            
+            this.renderNews(filteredResults, false);
+            
+            // Update page title
+            document.querySelector('#news-list-title .title-icon').textContent = '🔍';
+            document.querySelector('#news-list-title').innerHTML = `
+                <span class="title-icon">🔍</span>
+                Resultados para "${query}"
+            `;
+            
+        } catch (error) {
+            console.error('Search error:', error);
+            this.showError('Erro ao realizar busca');
+        } finally {
+            this.hideLoadingOverlay();
+        }
+    }
+
+    async subscribeNewsletter(formData) {
+        const email = formData.get('email');
+        const btn = document.querySelector('.newsletter-btn');
+        
+        if (!email) return;
+        
+        btn.classList.add('loading');
+        
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            this.showSuccess('Email cadastrado com sucesso!');
+            document.getElementById('newsletter-form').reset();
+            
+        } catch (error) {
+            console.error('Newsletter subscription error:', error);
+            this.showError('Erro ao cadastrar email');
+        } finally {
+            btn.classList.remove('loading');
+        }
+    }
+
+    startAutoUpdate() {
+        setInterval(() => {
+            this.loadBreakingNews();
+            this.loadWeather();
+            this.updateStats();
+        }, this.updateInterval);
+    }
+
+    updateStats() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        // Update time displays
+        document.getElementById('update-time').textContent = timeString;
+        document.getElementById('footer-update-time').textContent = timeString;
+        
+        // Update news count (simulate)
+        const newsCount = Math.floor(Math.random() * 50) + 100;
+        document.getElementById('news-count').textContent = newsCount;
+        document.getElementById('footer-news-count').textContent = newsCount;
+    }
+
+    getCategoryName(category) {
+        const names = {
+            politics: 'Política',
+            economy: 'Economia',
+            sports: 'Esportes',
+            culture: 'Cultura',
+            general: 'Geral'
+        };
+        
+        return names[category] || 'Notícias';
+    }
+
+    formatTimeAgo(date) {
+        const now = new Date();
+        const diff = now - date;
+        const minutes = Math.floor(diff / 60000);
+        const hours = Math.floor(diff / 3600000);
+        const days = Math.floor(diff / 86400000);
+
+        if (minutes < 1) return 'Agora';
+        if (minutes < 60) return `${minutes}min`;
+        if (hours < 24) return `${hours}h`;
+        if (days < 7) return `${days}d`;
+        
+        return date.toLocaleDateString('pt-BR');
+    }
+
+    showLoadingOverlay() {
+        document.getElementById('loading-overlay').classList.add('active');
+    }
+
+    hideLoadingOverlay() {
+        document.getElementById('loading-overlay').classList.remove('active');
+    }
+
+    showNewsLoading() {
+        const container = document.getElementById('news-items');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        // Create skeleton loaders
+        for (let i = 0; i < 5; i++) {
+            const skeleton = document.createElement('div');
+            skeleton.className = 'news-item skeleton';
+            skeleton.innerHTML = `
+                <div class="skeleton-image"></div>
+                <div class="news-content">
+                    <div class="skeleton-category"></div>
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-excerpt"></div>
+                    <div class="skeleton-meta"></div>
                 </div>
-                <section class="related-posts" aria-labelledby="related-title">
-                    <h3 id="related-title">Leia também</h3>
-                    <div class="related-grid"></div>
-                </section>
-                <section class="comments" aria-labelledby="comments-title">
-                    <h3 id="comments-title">Comentários</h3>
-                    <form name="comments" method="POST" class="comments-form" data-netlify="true" netlify-honeypot="bot-field">
-                        <input type="hidden" name="form-name" value="comments">
-                        <input type="hidden" name="postId" value="${post.id}">
-                        <div style="display: none;">
-                            <label>Não preencha: <input name="bot-field"></label>
-                        </div>
-                        <label for="comment-name" class="visually-hidden">Nome</label>
-                        <input id="comment-name" name="name" placeholder="Seu nome" required>
-                        <label for="comment-email" class="visually-hidden">Email</label>
-                        <input id="comment-email" name="email" type="email" placeholder="Seu email" required>
-                        <label for="comment-text" class="visually-hidden">Comentário</label>
-                        <textarea id="comment-text" name="comment" placeholder="Seu comentário" required></textarea>
-                        <button type="submit">Enviar</button>
-                    </form>
-                    <ul class="comments-list"></ul>
-                </section>
-                <button class="news-modal__close">
-                    Fechar
-                </button>
-            </div>
-        `;
-
-        const closeButton = modal.querySelector('.news-modal__close');
-        const onClose = () => {
-            document.body.removeChild(modal);
-            document.removeEventListener('keydown', onEsc);
-        };
-        const onEsc = (e) => {
-            if (e.key === 'Escape') onClose();
-        };
-        closeButton.addEventListener('click', onClose);
-        document.addEventListener('keydown', onEsc);
-        closeButton.focus();
-
-        // Render related posts
-        this.renderRelatedPosts(modal.querySelector('.related-grid'), post);
-
-        // Render comments (simulated)
-        this.renderComments(modal.querySelector('.comments-list'), post.id);
-
-        document.body.appendChild(modal);
-    }
-
-    showLoading() {
-        const postsContainer = document.querySelector('.posts');
-        if (!postsContainer) return;
-        postsContainer.setAttribute('aria-busy', 'true');
-
-        // Remove skeletons anteriores
-        postsContainer.querySelectorAll('.post-card').forEach(el => el.remove());
-
-        // Inserir skeletons
-        const skeletonCount = 3;
-        for (let i = 0; i < skeletonCount; i++) {
-            const sk = document.createElement('article');
-            sk.className = 'post-card';
-            sk.innerHTML = `
-                <div class="post-image" style="background: linear-gradient(90deg, #f1f5f9, #e2e8f0, #f1f5f9); background-size: 200% 100%; animation: shimmer 1.2s infinite; height: 220px;"></div>
-                <div class="post-content">
-                    <div style="height: 22px; width: 70%; background: #e5e7eb; border-radius: 8px; margin-bottom: 12px; animation: shimmer 1.2s infinite;"></div>
-                    <div style="height: 14px; width: 100%; background: #eef2f7; border-radius: 8px; margin-bottom: 8px; animation: shimmer 1.2s infinite;"></div>
-                    <div style="height: 14px; width: 80%; background: #eef2f7; border-radius: 8px; margin-bottom: 16px; animation: shimmer 1.2s infinite;"></div>
-                </div>`;
-            postsContainer.appendChild(sk);
+            `;
+            container.appendChild(skeleton);
         }
-
-        // Animação shimmer global (fallback inline)
-        const styleId = 'shimmer-style';
-        if (!document.getElementById(styleId)) {
+        
+        // Add skeleton styles
+        if (!document.getElementById('skeleton-styles')) {
             const style = document.createElement('style');
-            style.id = styleId;
-            style.textContent = `@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }`;
+            style.id = 'skeleton-styles';
+            style.textContent = `
+                .skeleton {
+                    pointer-events: none;
+                }
+                .skeleton-image,
+                .skeleton-category,
+                .skeleton-title,
+                .skeleton-excerpt,
+                .skeleton-meta {
+                    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+                    background-size: 200% 100%;
+                    animation: loading 1.5s infinite;
+                    border-radius: 4px;
+                }
+                .skeleton-image {
+                    width: 200px;
+                    height: 150px;
+                }
+                .skeleton-category {
+                    width: 80px;
+                    height: 20px;
+                    margin-bottom: 8px;
+                }
+                .skeleton-title {
+                    width: 100%;
+                    height: 24px;
+                    margin-bottom: 8px;
+                }
+                .skeleton-excerpt {
+                    width: 90%;
+                    height: 16px;
+                    margin-bottom: 16px;
+                }
+                .skeleton-meta {
+                    width: 60%;
+                    height: 14px;
+                }
+                @keyframes loading {
+                    0% { background-position: 200% 0; }
+                    100% { background-position: -200% 0; }
+                }
+            `;
             document.head.appendChild(style);
         }
     }
 
-    generateLead(title, excerpt) {
-        // Simulação simples de lead autoral; substitua por conteúdo real ou IA
-        return `Análise: ${title.split(' ').slice(0, 3).join(' ')} representa um avanço significativo para o Maranhão, impactando diretamente a economia local. ${excerpt.substring(0, 50)}...`;
-    }
-
-    renderRelatedPosts(container, currentPost) {
-        if (!container) return;
-        container.innerHTML = '';
-        const related = this.currentPosts.filter(p => p.id !== currentPost.id).slice(0, 3);
-        related.forEach(item => {
-            const card = document.createElement('article');
-            card.className = 'related-card';
-            card.innerHTML = `
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="related-link">
-                    <img src="${item.image}" alt="${item.title}" loading="lazy" decoding="async" width="120" height="80">
-                    <span class="related-title">${item.title}</span>
-                </a>`;
-            container.appendChild(card);
-        });
-    }
-
-    renderComments(container, postId) {
-        if (!container) return;
-        container.innerHTML = '';
-        const comments = this.getFallbackComments(); // Simulado; integre com API real
-        comments.forEach(c => {
-            const li = document.createElement('li');
-            li.className = 'comment-item';
-            li.innerHTML = `
-                <strong>${c.name}</strong>: ${c.body}
-            `;
-            container.appendChild(li);
-        });
-    }
-
-    hideLoading() {
-        const postsContainer = document.querySelector('.posts');
-        if (!postsContainer) return;
-        postsContainer.removeAttribute('aria-busy');
+    hideNewsLoading() {
+        const skeletons = document.querySelectorAll('.skeleton');
+        skeletons.forEach(skeleton => skeleton.remove());
     }
 
     showError(message) {
-        // Implementar exibição de erro
-        console.error('Error:', message);
+        this.showNotification(message, 'error');
+    }
+
+    showSuccess(message) {
+        this.showNotification(message, 'success');
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        // Add notification styles if not present
+        if (!document.getElementById('notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease-out;
+                }
+                .notification-success { background: #10b981; }
+                .notification-error { background: #ef4444; }
+                .notification-info { background: #3b82f6; }
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideIn 0.3s ease-out reverse';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
     }
 }
 
-// Inicializar quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
-    const blogManager = new BlogStateManager();
-    window.blogAPI = new BlogAPI();
+// Live Video Functionality
+function playLiveVideo() {
+    const videoContainer = document.getElementById('live-video');
+    if (!videoContainer) return;
+    
+    // Replace with actual live stream embed
+    videoContainer.innerHTML = `
+        <iframe 
+            width="100%" 
+            height="100%" 
+            src="https://www.youtube.com/embed/live_stream?channel=UC_x5XG1OV2P6uZZ5FSM9Ttw&autoplay=1" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+    `;
+}
+
+// Initialize the portal when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    window.newsPortal = new NewsPortal();
 });
 
-// Exportar para uso em outros arquivos
-    // Remover as exportações para evitar erros
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('SW registered: ', registration);
+            })
+            .catch(registrationError => {
+                console.log('SW registration failed: ', registrationError);
+            });
+    });
+}
+
+// Export for use in other files
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = NewsPortal;
+}

@@ -3,79 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaranhãoNews - Notícias do Estado do Maranhão</title>
-    <meta name="description" content="Portal de notícias sobre política, economia e desenvolvimento do estado do Maranhão. Fique por dentro das principais notícias do MA">
-    <meta name="keywords" content="maranhão, notícias, política, economia, são luís, desenvolvimento, brasil, nordeste">
+    <title>MaranhãoNews - Portal de Notícias do Maranhão</title>
+    <meta name="description" content="Portal de notícias profissional do Maranhão com atualizações automáticas, vídeos e imagens em tempo real">
+    <meta name="keywords" content="maranhão, notícias, política, economia, são luís, brasil, nordeste, tempo real">
     <meta name="author" content="MaranhãoNews">
     <meta name="robots" content="index, follow">
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MaranhãoNews - Notícias do Maranhão">
-    <meta property="og:description" content="As principais notícias sobre política, economia e desenvolvimento do Maranhão">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
-    <meta property="og:url" content="https://www.maranhaonews.example/">
+    <meta property="og:title" content="MaranhãoNews - Portal de Notícias do Maranhão">
+    <meta property="og:description" content="Notícias em tempo real sobre política, economia e desenvolvimento do Maranhão">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=1200&h=630&fit=crop">
+    <meta property="og:url" content="https://www.maranhaonews.com.br">
     <meta property="og:site_name" content="MaranhãoNews">
     <meta property="og:locale" content="pt_BR">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MaranhãoNews - Notícias do Maranhão">
-    <meta name="twitter:description" content="As principais notícias sobre política, economia e desenvolvimento do Maranhão">
+    <meta name="twitter:title" content="MaranhãoNews - Portal de Notícias do Maranhão">
+    <meta name="twitter:description" content="Notícias em tempo real sobre política, economia e desenvolvimento do Maranhão">
     <meta name="twitter:site" content="@MaranhaoNews">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=630&fit=crop">
-    
-    <!-- Google Analytics (GA4) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX');
-    </script>
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=1200&h=630&fit=crop">
     
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📝</text></svg>">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="style.css" as="style">
-            
+    <link rel="preconnect" href="https://images.unsplash.com">
+    <link rel="preconnect" href="https://newsapi.org">
+    
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     
-    <!-- Canonical -->
-    <link rel="canonical" href="https://www.maranhaonews.example/">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
     
-    <!-- Preconnect to external domains -->
-    <link rel="preconnect" href="https://images.unsplash.com">
+    <!-- Canonical -->
+    <link rel="canonical" href="https://www.maranhaonews.com.br/">
     
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "Blog",
+        "@type": "NewsMediaOrganization",
         "name": "MaranhãoNews",
-        "description": "Portal de notícias sobre política, economia, cultura e desenvolvimento do Maranhão",
-        "url": "https://www.maranhaonews.example/",
-        "publisher": {
-            "@type": "Organization",
-            "name": "MaranhãoNews",
-            "logo": {
-                "@type": "ImageObject",
-                "url": "https://www.maranhaonews.example/logo.png"
-            }
+        "description": "Portal de notícias profissional do Maranhão com cobertura em tempo real",
+        "url": "https://www.maranhaonews.com.br/",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.maranhaonews.com.br/logo.png"
         },
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "https://www.maranhaonews.example/"
+        "sameAs": [
+            "https://twitter.com/MaranhaoNews",
+            "https://facebook.com/MaranhaoNews"
+        ],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "São Luís",
+            "addressRegion": "MA",
+            "addressCountry": "BR"
         }
     }
     </script>
-
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+    <!-- Breaking News Banner -->
+    <div class="breaking-news" id="breaking-news" role="banner" aria-live="assertive">
+        <div class="breaking-news-content">
+            <span class="breaking-label">🔴 URGENTE</span>
+            <div class="breaking-text" id="breaking-text">Carregando notícias urgentes...</div>
+        </div>
+    </div>
 
     <!-- Header -->
     <header class="header" role="banner">
@@ -83,8 +85,17 @@
             <div class="nav-container">
                 <a class="nav-logo" href="#home" aria-label="Ir para o início">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="bandeira">
-                    <span aria-hidden="true">📰</span> MaranhãoNews
+                    <div class="logo-text">
+                        <span class="logo-main">MaranhãoNews</span>
+                        <span class="logo-sub">Portal de Notícias</span>
+                    </div>
                 </a>
+                
+                <!-- Live indicator -->
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">AO VIVO</span>
+                </div>
                 
                 <!-- Mobile menu button -->
                 <button class="mobile-menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-menu">
@@ -95,7 +106,7 @@
                 
                 <ul class="nav-menu" id="primary-menu" role="menubar">
                     <li role="none">
-                        <a href="#home" class="nav-link" role="menuitem" aria-current="page">Início</a>
+                        <a href="#home" class="nav-link active" role="menuitem" aria-current="page">Início</a>
                     </li>
                     <li role="none">
                         <a href="#politica" class="nav-link" role="menuitem">Política</a>
@@ -104,209 +115,317 @@
                         <a href="#economia" class="nav-link" role="menuitem">Economia</a>
                     </li>
                     <li role="none">
+                        <a href="#esportes" class="nav-link" role="menuitem">Esportes</a>
+                    </li>
+                    <li role="none">
                         <a href="#cultura" class="nav-link" role="menuitem">Cultura</a>
                     </li>
                     <li role="none">
-                        <a href="sobre.html" class="nav-link" role="menuitem">Sobre</a>
-                    </li>
-                    <li role="none">
-                        <a href="contato.html" class="nav-link" role="menuitem">Contato</a>
+                        <a href="#videos" class="nav-link" role="menuitem">Vídeos</a>
                     </li>
                 </ul>
+                
+                <!-- Search and Weather -->
+                <div class="header-tools">
+                    <div class="weather-widget" id="weather-widget">
+                        <span class="weather-temp">--°C</span>
+                        <span class="weather-location">São Luís</span>
+                    </div>
+                    <button class="search-toggle" aria-label="Abrir busca">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </nav>
+        
+        <!-- Search overlay -->
+        <div class="search-overlay" id="search-overlay">
+            <div class="search-container">
+                <input type="search" class="search-input" placeholder="Buscar notícias..." aria-label="Buscar notícias">
+                <button class="search-close" aria-label="Fechar busca">×</button>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Live News -->
     <section class="hero" id="home" aria-labelledby="hero-title">
-        <div class="hero-content">
-            <h1 id="hero-title" class="hero-title">Maranhão em Foco</h1>
-            <p class="hero-subtitle">As principais notícias sobre política, economia e desenvolvimento do estado do Maranhão</p>
-            <a href="#posts" class="hero-btn" aria-label="Ver notícias do Maranhão">Ver Notícias</a>
+        <div class="hero-slider" id="hero-slider">
+            <!-- Slides will be populated by JavaScript -->
+        </div>
+        <div class="hero-overlay">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="live-dot"></span>
+                    NOTÍCIAS EM TEMPO REAL
+                </div>
+                <h1 id="hero-title" class="hero-title">Maranhão em Foco</h1>
+                <p class="hero-subtitle">Cobertura completa e atualizada dos principais acontecimentos do estado</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="news-count">0</span>
+                        <span class="stat-label">Notícias hoje</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="update-time">--:--</span>
+                        <span class="stat-label">Última atualização</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Main Content -->
     <main id="main-content" class="main-container">
-        <!-- Featured Section -->
-        <section class="featured" id="destaques" aria-labelledby="featured-title">
-            <h2 id="featured-title" class="section-title">Destaques</h2>
-            <div class="featured-grid" aria-live="polite"></div>
+        <!-- Featured News Grid -->
+        <section class="featured-section" aria-labelledby="featured-title">
+            <div class="section-header">
+                <h2 id="featured-title" class="section-title">
+                    <span class="title-icon">⭐</span>
+                    Principais Notícias
+                </h2>
+                <button class="refresh-btn" id="refresh-featured" aria-label="Atualizar notícias principais">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                    </svg>
+                    Atualizar
+                </button>
+            </div>
+            <div class="featured-grid" id="featured-grid" aria-live="polite">
+                <!-- Featured news will be populated by JavaScript -->
+            </div>
         </section>
 
-        <!-- Posts Section -->
-        <section class="posts" id="posts" aria-labelledby="posts-title" aria-live="polite">
-            <h2 id="posts-title" class="section-title">Notícias Recentes</h2>
-            
-            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
-                <div class="post-image">
-                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&h=300&fit=crop" 
-                         alt="Workspace moderno com computador e caderno" 
-                         loading="lazy" decoding="async"
-                         width="400"
-                         height="300">
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column - News Feed -->
+            <div class="news-feed">
+                <!-- Category Filters -->
+                <div class="category-filters" role="tablist" aria-label="Filtros de categoria">
+                    <button class="filter-btn active" data-category="all" role="tab" aria-selected="true">Todas</button>
+                    <button class="filter-btn" data-category="politics" role="tab">Política</button>
+                    <button class="filter-btn" data-category="economy" role="tab">Economia</button>
+                    <button class="filter-btn" data-category="sports" role="tab">Esportes</button>
+                    <button class="filter-btn" data-category="culture" role="tab">Cultura</button>
                 </div>
-                <div class="post-content">
-                    <h3 class="post-title" itemprop="headline">Como criar um blog profissional</h3>
-                    <p class="post-excerpt" itemprop="description">
-                        Aprenda os passos essenciais para criar um blog com design moderno e funcionalidades profissionais...
-                    </p>
-                    <div class="post-meta">
-                        <time class="post-date" datetime="2025-08-23" itemprop="datePublished">23 Ago 2025</time>
-                        <a href="#" class="read-more" aria-label="Ler mais sobre Como criar um blog profissional">Ler mais</a>
-                    </div>
-                </div>
-            </article>
 
-            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
-                <div class="post-image">
-                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop" 
-                         alt="Design de interface moderna em tela de computador" 
-                         loading="lazy" decoding="async"
-                         width="400"
-                         height="300">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title" itemprop="headline">Dicas de design para web</h3>
-                    <p class="post-excerpt" itemprop="description">
-                        Descubra as melhores práticas de design web para criar interfaces atraentes e funcionais...
-                    </p>
-                    <div class="post-meta">
-                        <time class="post-date" datetime="2025-08-22" itemprop="datePublished">22 Ago 2025</time>
-                        <a href="#" class="read-more" aria-label="Ler mais sobre Dicas de design para web">Ler mais</a>
+                <!-- News List -->
+                <section class="news-list" id="news-list" aria-labelledby="news-list-title" aria-live="polite">
+                    <h2 id="news-list-title" class="section-title">
+                        <span class="title-icon">📰</span>
+                        Últimas Notícias
+                    </h2>
+                    <div class="news-items" id="news-items">
+                        <!-- News items will be populated by JavaScript -->
                     </div>
-                </div>
-            </article>
-
-            <article class="post-card" itemscope itemtype="https://schema.org/BlogPosting">
-                <div class="post-image">
-                    <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=400&h=300&fit=crop" 
-                         alt="Caderno com anotações de desenvolvimento web" 
-                         loading="lazy" decoding="async"
-                         width="400"
-                         height="300">
-                </div>
-                <div class="post-content">
-                    <h3 class="post-title" itemprop="headline">Otimização de performance web</h3>
-                    <p class="post-excerpt" itemprop="description">
-                        Técnicas avançadas para melhorar a performance do seu website e proporcionar melhor experiência...
-                    </p>
-                    <div class="post-meta">
-                        <time class="post-date" datetime="2025-08-21" itemprop="datePublished">21 Ago 2025</time>
-                        <a href="#" class="read-more" aria-label="Ler mais sobre Otimização de performance web">Ler mais</a>
-                    </div>
-                </div>
-            </article>
-        </section>
-
-        <!-- Sidebar -->
-        <aside class="sidebar" aria-labelledby="sidebar-title">
-            <div class="widget">
-                <h3 id="sidebar-title" class="widget-title">Sobre</h3>
-                <p class="widget-content">
-                    Portal de notícias dedicado a cobrir os principais acontecimentos do estado do Maranhão. 
-                    Trazemos informações sobre política, economia, cultura e desenvolvimento regional.
-                </p>
+                    <button class="load-more-btn" id="load-more" aria-label="Carregar mais notícias">
+                        Carregar mais notícias
+                    </button>
+                </section>
             </div>
 
-            <div class="widget">
-                <h3 id="newsletter-title" class="widget-title">Newsletter</h3>
-                <p class="widget-content">Receba os melhores posts diretamente no seu email.</p>
-                <form name="newsletter" method="POST" class="newsletter-form" aria-labelledby="newsletter-title" data-netlify="true" netlify-honeypot="bot-field">
-                    <input type="hidden" name="form-name" value="newsletter">
-                    <div style="display: none;">
-                        <label>Não preencha este campo: <input name="bot-field"></label>
+            <!-- Right Column - Sidebar -->
+            <aside class="sidebar" aria-labelledby="sidebar-title">
+                <!-- Live Video Section -->
+                <div class="widget video-widget">
+                    <h3 class="widget-title">
+                        <span class="title-icon">📺</span>
+                        Ao Vivo
+                    </h3>
+                    <div class="video-container" id="live-video">
+                        <div class="video-placeholder">
+                            <div class="video-icon">📹</div>
+                            <p>Transmissão ao vivo disponível</p>
+                            <button class="play-btn" onclick="playLiveVideo()">Assistir</button>
+                        </div>
                     </div>
-                    <label for="newsletter-email" class="visually-hidden">Seu email</label>
-                    <input 
-                        type="email" 
-                        id="newsletter-email" 
-                        name="email"
-                        placeholder="Seu email" 
-                        class="newsletter-input"
-                        required
-                        aria-required="true">
-                    <button type="submit" class="newsletter-btn">Assinar</button>
-                </form>
-            </div>
+                </div>
 
-            <div class="widget" id="most-read-widget">
-                <h3 class="widget-title">Mais Lidas</h3>
-                <ol class="most-read-list" role="list"></ol>
-            </div>
+                <!-- Trending Topics -->
+                <div class="widget trending-widget">
+                    <h3 class="widget-title">
+                        <span class="title-icon">🔥</span>
+                        Trending
+                    </h3>
+                    <div class="trending-list" id="trending-list">
+                        <!-- Trending topics will be populated by JavaScript -->
+                    </div>
+                </div>
 
-            <div class="widget">
-                <h3 class="widget-title">Categorias</h3>
-                <ul class="categories-list" role="list">
-                    <li><a href="#" class="category-link">Desenvolvimento Web</a></li>
-                    <li><a href="#" class="category-link">Design UX/UI</a></li>
-                    <li><a href="#" class="category-link">Performance</a></li>
-                    <li><a href="#" class="category-link">Ferramentas</a></li>
-                </ul>
-            </div>
-        </aside>
+                <!-- Weather Widget -->
+                <div class="widget weather-widget-full">
+                    <h3 class="widget-title">
+                        <span class="title-icon">🌤️</span>
+                        Clima em São Luís
+                    </h3>
+                    <div class="weather-info" id="weather-info">
+                        <div class="weather-current">
+                            <div class="weather-temp-large" id="temp-large">--°C</div>
+                            <div class="weather-desc" id="weather-desc">Carregando...</div>
+                        </div>
+                        <div class="weather-details">
+                            <div class="weather-detail">
+                                <span>Sensação:</span>
+                                <span id="feels-like">--°C</span>
+                            </div>
+                            <div class="weather-detail">
+                                <span>Umidade:</span>
+                                <span id="humidity">--%</span>
+                            </div>
+                            <div class="weather-detail">
+                                <span>Vento:</span>
+                                <span id="wind-speed">-- km/h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Newsletter -->
+                <div class="widget newsletter-widget">
+                    <h3 class="widget-title">
+                        <span class="title-icon">📧</span>
+                        Newsletter
+                    </h3>
+                    <p class="widget-content">Receba as principais notícias do Maranhão no seu email</p>
+                    <form class="newsletter-form" id="newsletter-form" aria-labelledby="newsletter-title">
+                        <input type="email" class="newsletter-input" placeholder="Seu melhor email" required aria-label="Email para newsletter">
+                        <button type="submit" class="newsletter-btn">
+                            <span class="btn-text">Assinar</span>
+                            <span class="btn-loading">Enviando...</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Social Media -->
+                <div class="widget social-widget">
+                    <h3 class="widget-title">
+                        <span class="title-icon">📱</span>
+                        Siga-nos
+                    </h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link facebook" aria-label="Facebook">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            Facebook
+                        </a>
+                        <a href="#" class="social-link twitter" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                            Twitter
+                        </a>
+                        <a href="#" class="social-link instagram" aria-label="Instagram">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            Instagram
+                        </a>
+                        <a href="#" class="social-link youtube" aria-label="YouTube">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                            YouTube
+                        </a>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </main>
-
-    <!-- Additional Sections for Navigation Anchors -->
-    <section id="politica" class="section-block" aria-labelledby="politica-title">
-        <h2 id="politica-title" class="section-title">Política</h2>
-        <p class="section-paragraph">Em breve: cobertura de política do Maranhão.</p>
-    </section>
-
-    <section id="economia" class="section-block" aria-labelledby="economia-title">
-        <h2 id="economia-title" class="section-title">Economia</h2>
-        <p class="section-paragraph">Em breve: notícias e análises sobre a economia do estado.</p>
-    </section>
-
-    <section id="cultura" class="section-block" aria-labelledby="cultura-title">
-        <h2 id="cultura-title" class="section-title">Cultura</h2>
-        <p class="section-paragraph">Em breve: eventos e destaques culturais no Maranhão.</p>
-    </section>
-
-    <section id="contato" class="section-block" aria-labelledby="contato-title">
-        <h2 id="contato-title" class="section-title">Contato</h2>
-        <p class="section-paragraph">Para parcerias e sugestões, entre em contato pelo formulário de newsletter ou email.</p>
-    </section>
 
     <!-- Footer -->
     <footer class="footer" role="contentinfo">
         <div class="footer-content">
-            <p>&copy; 2025 MaranhãoNews. Todos os direitos reservados. <a href="privacidade.html" class="footer-link">Política de Privacidade</a></p>
-            <div class="social-links">
-                <a href="#" class="social-link" aria-label="Twitter">
-                    <span aria-hidden="true">🐦</span> Twitter
-                </a>
-                <a href="#" class="social-link" aria-label="LinkedIn">
-                    <span aria-hidden="true">💼</span> LinkedIn
-                </a>
-                <a href="#" class="social-link" aria-label="GitHub">
-                    <span aria-hidden="true">🐙</span> GitHub
-                </a>
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Flag_of_Maranh%C3%A3o.svg/1920px-Flag_of_Maranh%C3%A3o.svg.png" alt="Bandeira do Maranhão" class="footer-flag">
+                    <div>
+                        <h3>MaranhãoNews</h3>
+                        <p>Portal de Notícias do Maranhão</p>
+                    </div>
+                </div>
+                <p class="footer-desc">Cobertura completa e imparcial dos principais acontecimentos do estado do Maranhão, com atualizações em tempo real.</p>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Seções</h4>
+                <ul class="footer-links">
+                    <li><a href="#politica">Política</a></li>
+                    <li><a href="#economia">Economia</a></li>
+                    <li><a href="#esportes">Esportes</a></li>
+                    <li><a href="#cultura">Cultura</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Institucional</h4>
+                <ul class="footer-links">
+                    <li><a href="#sobre">Sobre Nós</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                    <li><a href="#privacidade">Privacidade</a></li>
+                    <li><a href="#termos">Termos de Uso</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h4>Contato</h4>
+                <div class="contact-info">
+                    <p>📧 contato@maranhaonews.com.br</p>
+                    <p>📱 (98) 99999-9999</p>
+                    <p>📍 São Luís - MA</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 MaranhãoNews. Todos os direitos reservados.</p>
+            <div class="footer-stats">
+                <span>Última atualização: <span id="footer-update-time">--:--</span></span>
+                <span>|</span>
+                <span>Notícias hoje: <span id="footer-news-count">0</span></span>
             </div>
         </div>
     </footer>
 
+    <!-- Back to top button -->
+    <button class="back-to-top" id="back-to-top" aria-label="Voltar ao topo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </button>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Carregando notícias...</p>
+        </div>
+    </div>
+
     <!-- JavaScript -->
-    <script src="form-validation.js" defer></script>
-    <script src="smooth-scrolling.js" defer></script>
     <script src="api-calls.js" defer></script>
-    
-    <!-- Google Analytics Simulation -->
-    <script>
-    // Simulação do Google Analytics
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
-    </script>
+    <script src="smooth-scrolling.js" defer></script>
+    <script src="form-validation.js" defer></script>
     
     <!-- Performance monitoring -->
     <script>
-    // Monitoramento de performance básico
-    window.addEventListener('load', function() {
-        const loadTime = performance.now();
-        console.log('Página carregada em:', loadTime.toFixed(2), 'ms');
-    });
+        // Performance monitoring
+        window.addEventListener('load', function() {
+            const loadTime = performance.now();
+            console.log('Página carregada em:', loadTime.toFixed(2), 'ms');
+            
+            // Update footer stats
+            document.getElementById('footer-update-time').textContent = new Date().toLocaleTimeString('pt-BR');
+        });
+        
+        // Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(console.error);
+        }
     </script>
 </body>
 </html>
